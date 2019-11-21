@@ -85,6 +85,12 @@ def file_passes(filename, refs, regexs):
     if generated:
         if extension == "go":
             extension = "generatego"
+        if extension == "ts":
+            if(".d.ts" in filename):
+                extension = "generatego"
+            else:
+                extension = "generatets"
+
 
     if extension != "":
         ref = refs[extension]
@@ -94,6 +100,10 @@ def file_passes(filename, refs, regexs):
     # remove extra content from the top of files
     if extension == "go" or extension == "generatego":
         p = regexs["go_build_constraints"]
+        (data, found) = p.subn("", data, 1)
+
+    if generated and extension == "generatets":
+        p = regexs["ts_documentation"]
         (data, found) = p.subn("", data, 1)
 
     data = data.splitlines()
@@ -207,6 +217,8 @@ def get_regexs():
     regexs["date"] = re.compile(get_dates())
     # strip // +build \n\n build constraints
     regexs["go_build_constraints"] = re.compile(r"^(// \+build.*\n)+\n", re.MULTILINE)
+    # strip ts documentation
+    regexs["ts_documentation"] = re.compile(r"^(/\*\*([^\*]|\*(?!/))*?.*?\*/*\n)+\n", re.MULTILINE)
     # strip #!.* from shell scripts
     regexs["shebang"] = re.compile(r"^(#!.*\n)\n*", re.MULTILINE)
     # Search for generated files
