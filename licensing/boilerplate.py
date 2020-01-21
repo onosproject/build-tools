@@ -45,9 +45,17 @@ parser.add_argument(
     help="give verbose output regarding why a file does not pass",
     action="store_true")
 
+parser.add_argument(
+    "--skipped-dir",
+    default=[".git", "vendor", "node_modules", "dist"],
+    help="Add directories to skip during license check",
+    action="append")
+
 args = parser.parse_args()
 
 verbose_out = sys.stderr if args.verbose else open("/dev/null", "w")
+
+skipped_dirs = args.skipped_dir
 
 def get_refs():
     refs = {}
@@ -156,9 +164,6 @@ def file_passes(filename, refs, regexs):
 
 def file_extension(filename):
     return os.path.splitext(filename)[1].split(".")[-1].lower()
-
-# list of the directories to skip during license check
-skipped_dirs = ['.git', "vendor", "node_modules", "dist"]
 
 # list all the files contain 'DO NOT EDIT', but are not generated
 skipped_ungenerated_files = ['build/licensing/boilerplate.py']
