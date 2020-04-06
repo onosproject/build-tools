@@ -1,0 +1,70 @@
+#!/bin/bash
+# Copyright 2020-present Open Networking Foundation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Poor-man's tool to tag a release by the following:
+#   1) build the docker image via 'make images'
+#   2) tag the current commit with the specified version tag
+#   3) push the docker image(s) up with the specified version tag
+
+# The tool requires the user to have the authorization to:
+#   1) push tag to the upstream repo
+#   2) publish docker image to dockerhub
+
+# Also, the following conditions must be met:
+#   1) user is logged in to dockerhub
+#   2) git tag does not already exist
+#   3) non-empty version number is specified
+#   4) at least one docker image path is specified
+#   5) following the build all images must exist in the local docker image cache
+
+version="${1}"
+shift 1
+
+[ -z "$version" -o $# -lt 1 ] && echo "usage: $(dirname $0) <version> <docker-image>..." >&2 && exit 1
+
+! egrep -q '"auths": {$' ~/.docker/config.json && echo "Not logged in to dockerhub!" >&2 && exit 1
+
+git tag | grep $version && echo "Tag $version already exists" >&2 && exit 1
+
+# 1) Make images
+make images
+
+# 1a) validate that each docker image exists
+for image in "$*"; do
+  id=$(docker images $image:latest -q)
+  [ -z "$id" ] && echo "Docker image $image:latest does not exist!" && exit 1
+done
+
+# 2) Tag the upstream (or origin) repo with the specified version tag
+echo "Tagging sources with $version..."
+git tag $version
+
+echo "Pushing $version tag upstream..."
+url=$(git remote -v | grep upstream | cut -f2 | grep https | cut -d\  -f1)
+if [ -n "$url" ]; then
+  git remote set-url --push upstream $url
+  git push upstream $version
+  git remote set-url --push upstream no_push
+else
+  git push origin
+fi
+
+# 3) push each docker image to docker hub; assumed docker login was already run
+for image in "$*"; do
+  echo "Publishing image $image..."
+  id=$(docker images $image:latest -q)
+  docker tag $id $image:$version
+  docker push $image:$version
+done
