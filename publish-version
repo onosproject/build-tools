@@ -36,7 +36,7 @@ shift 1
 
 ! egrep -q '"auths": {$' ~/.docker/config.json && echo "Not logged in to dockerhub!" >&2 && exit 1
 
-git tag | grep $version && echo "Tag $version already exists" >&2 && exit 1
+git tag | grep -q $version && echo "Tag $version already exists" >&2 && exit 1
 
 # 1) Make images
 make images
@@ -52,7 +52,7 @@ echo "Tagging sources with $version..."
 git tag $version
 
 echo "Pushing $version tag upstream..."
-url=$(git remote -v | grep upstream | cut -f2 | grep https | cut -d\  -f1)
+url=$(git remote -v | grep upstream | cut -f2 | grep https | cut -d\  -f1 | sed 's|https://github.com/|git@github.com:|')
 if [ -n "$url" ]; then
   git remote set-url --push upstream $url
   git push upstream $version
