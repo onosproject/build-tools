@@ -36,6 +36,10 @@ shift 1
 # Validate args...
 [ -z "$version" -o $# -lt 1 ] && echo "usage: $(dirname $0) <version> <docker-image>..." >&2 && exit 1
 
+# Validate the version format.
+! [[ $version =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9][a-zA-Z0-9.]*[a-zA-Z0-9])*$ ]] && \
+  echo "Invalid version format: $version" >&2 && exit 1
+
 # Validate docker logins...
 ! egrep -q '"auths": {$' ~/.docker/config.json && echo "Not logged in to dockerhub!" >&2 && exit 1
 
