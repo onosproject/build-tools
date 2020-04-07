@@ -24,42 +24,44 @@
 
 # Also, the following conditions must be met:
 #   1) user is logged in to dockerhub
-#   2) git tag does not already exist
-#   3) non-empty version number is specified
-#   4) at least one docker image path is specified
-#   5) following the build all images must exist in the local docker image cache
+#   2) repo must have upstream (or origin) remote push enabled via ssh
+#   3) git tag does not already exist
+#   4) non-empty version number is specified
+#   5) at least one docker image path is specified
+#   6) following the build all images must exist in the local docker image cache
 
 version="${1}"
 shift 1
 
+# Validate args...
 [ -z "$version" -o $# -lt 1 ] && echo "usage: $(dirname $0) <version> <docker-image>..." >&2 && exit 1
 
+# Validate docker logins...
 ! egrep -q '"auths": {$' ~/.docker/config.json && echo "Not logged in to dockerhub!" >&2 && exit 1
 
+# Validate upstream (or origin) push URL is via SSH...
+git remote -v | grep upstream | grep -q push && upstream="upstream" || upstream="origin"
+! git remote -v | grep $upstream | grep push | cut -f2 | cut -d\  -f1 | grep -q 'git@github.com:' && \
+      echo "Upstream remote not setup with SSH push URL" >&2 && exit 1
+
+# Vaidate tag does not already exist
 git tag | grep -q $version && echo "Tag $version already exists" >&2 && exit 1
 
 # 1) Make images
 make images
 
 # 1a) validate that each docker image exists
-for image in "$*"; do
+for image in "$@"; do
   id=$(docker images $image:latest -q)
   [ -z "$id" ] && echo "Docker image $image:latest does not exist!" && exit 1
 done
 
-# 2) Tag the upstream (or origin) repo with the specified version tag
+# 2) Push the specified version tag to upstream (or origin) repo
 echo "Tagging sources with $version..."
 git tag $version
 
-echo "Pushing $version tag upstream..."
-url=$(git remote -v | grep upstream | cut -f2 | grep https | cut -d\  -f1 | sed 's|https://github.com/|git@github.com:|')
-if [ -n "$url" ]; then
-  git remote set-url --push upstream $url
-  git push upstream $version
-  git remote set-url --push upstream no_push
-else
-  git push origin
-fi
+echo "Pushing $version tag to $upstream..."
+git push $upstream $version
 
 # 3) push each docker image to docker hub; assumed docker login was already run
 for image in "$*"; do
