@@ -31,6 +31,10 @@ shift 1
 # Validate args...
 [ -z "$version" -o $# -lt 1 ] && echo "usage: $0 <version> <dependencies>..." >&2 && exit 1
 
+# Validate the version format.
+! [[ $version =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9][a-zA-Z0-9.]*[a-zA-Z0-9])*$ ]] && \
+  echo "Invalid version format: $version" >&2 && exit 1
+
 # Validate upstream (or origin) push URL is via SSH...
 git remote -v | grep upstream | grep -q push && upstream="upstream" || upstream="origin"
 ! git remote -v | grep $upstream | grep push | cut -f2 | cut -d\  -f1 | grep -q 'git@github.com:' && \
@@ -43,14 +47,20 @@ git remote -v | grep upstream | grep -q push && upstream="upstream" || upstream=
 ! git status -b | grep -q "nothing to commit, working tree clean" && \
       echo "There are modified files" >&2 && exit 1
 
-# 1) Run "go get -u"
+# 1) Run "go get -u" - if the dependency has a version e.g. onos-topo@v0.5.0 then use it
+#     otherwise use the global version
 for dependency in "$@"; do
-  GO111MODULE=on go get -u github.com/onosproject/$dependency@$version
+  if [[ $dependency == *['@']* ]];
+  then
+    ! GO111MODULE=on go get -u github.com/onosproject/$dependency && exit 1
+  else
+    ! GO111MODULE=on go get -u github.com/onosproject/$dependency@$version && exit 1
+  fi
 done
-GO111MODULE=on go build -v ./...
+! GO111MODULE=on go build -v ./... && exit 1
 
 # 2) Create a branch and push it
 git checkout -b onosdeps$version && \
 git add go.mod go.sum && \
-git commit -m"Bump to $version of onosproject dependencies" && \
+git commit -m"Bump version of onosproject dependencies for $version" && \
 git push upstream
