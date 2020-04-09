@@ -51,6 +51,13 @@ git remote -v | grep upstream | grep -q push && upstream="upstream" || upstream=
 # Vaidate tag does not already exist
 git tag | grep -q $version && echo "Tag $version already exists" >&2 && exit 1
 
+# Validate we are on master
+! git status -b | grep "On branch" | cut -d\  -f3 | grep -q master && \
+      echo "Not on master branch" >&2 && exit 1
+
+! git status -b | grep -q "nothing to commit, working tree clean" && \
+      echo "There are modified files" >&2 && exit 1
+
 # 1) Make images
 make images
 
