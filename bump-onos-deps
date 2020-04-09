@@ -28,6 +28,8 @@
 version="${1}"
 shift 1
 NAMEBASE=github.com/onosproject
+MPBASE="$NAMEBASE/config-models/modelplugin"
+MPBASELEN=`expr length "$MPBASE"`
 
 # Validate args...
 [ -z "$version" ] && echo "usage: $0 <version> <exceptions>..." >&2 && exit 1
@@ -57,7 +59,7 @@ commitmsg="Bump version of $NAMEBASE dependencies to $version"
 commitmsg+=("") # Blank line
 nochanges=1
 
-candidates=($(grep $NAMEBASE go.mod | grep -v module | grep -v $version | grep -v indirect | cut -d\  -f1 | cut -f2))
+candidates=($(grep $NAMEBASE go.mod | grep -v module | grep -v $version | grep -v indirect | grep -v $MPBASE | cut -d\  -f1 | cut -f2))
 # 1) Run "go get -u" - if the candidate is not in the exception list
 for candidate in ${candidates[@]}; do
   skipped=0
@@ -88,4 +90,5 @@ fi
 git checkout -b onosdeps$version && \
 git add go.mod go.sum && \
 git commit -m"$msg" && \
-git push upstream
+git push upstream && \
+git checkout master
