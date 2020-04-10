@@ -1,25 +1,25 @@
-FROM golang:1.13
+FROM golang:1.14
 
 COPY dep-*.sha256 .
 
-RUN apt-get update
+RUN apt-get update && apt-get install -y protobuf-compiler
 RUN mkdir release && \
-    wget -q -O release/dep-$(go env GOOS)-$(go env GOARCH) https://github.com/golang/dep/releases/download/v0.5.0/dep-$(go env GOOS)-$(go env GOARCH) && \
+    wget -q -O release/dep-$(go env GOOS)-$(go env GOARCH) https://github.com/golang/dep/releases/download/v0.5.4/dep-$(go env GOOS)-$(go env GOARCH) && \
     sha256sum -c dep-$(go env GOOS)-$(go env GOARCH).sha256 && \
     mv release/dep-$(go env GOOS)-$(go env GOARCH) /go/bin/dep && \
     chmod +x /go/bin/dep && \
-    rmdir release && \
     rm dep-*.sha256 && \
-    apt-get install -y protobuf-compiler && \
+    mkdir -p /go/src/github.com/protocolbuffers && \
+    git clone --branch master https://github.com/protocolbuffers/protobuf /go/src/github.com/protocolbuffers/protobuf
+
+RUN export GO111MODULE=on && \
     go get -u github.com/golang/protobuf/protoc-gen-go && \
-    mkdir -p /go/src/github.com/google && \
-    git clone --branch master https://github.com/google/protobuf /go/src/github.com/google/protobuf && \
+    go get -u google.golang.org/protobuf/proto && \
     go get -u golang.org/x/lint/golint && \
     go get -u github.com/fzipp/gocyclo && \
     go get -u github.com/client9/misspell/cmd/misspell && \
     go get -u github.com/gordonklaus/ineffassign && \
-    go get -u github.com/openconfig/ygot/generator && \
-    mkdir -p /go/src/github.com/
+    go get -u github.com/openconfig/ygot/generator
 
 WORKDIR "/go/src/github.com"
 
