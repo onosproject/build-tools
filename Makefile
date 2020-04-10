@@ -15,7 +15,7 @@ protoc-go-docker: # @HELP build protoc-go Docker image
 	docker build -t onosproject/protoc-go:${ONOS_BUILD_VERSION} build/protoc-go
 
 publish: # @HELP publish version on github and dockerhub
-	./publish-version ${VERSION} onosproject/protoc-go
+	./publish-version ${VERSION} onosproject/protoc-go onosproject/golang-build
 
 images: # @HELP create docker images
 images: protoc-go-docker golang-build-docker
