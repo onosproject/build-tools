@@ -226,13 +226,17 @@ def get_regexs():
     regexs["generator_name"] = get_generator()
     return regexs
 
+def is_deepcopy(filename):
+    return filename.endswith('.deepcopy.go')
+
+
 def main():
     regexs = get_regexs()
     refs = get_refs()
     filenames = get_files(refs.keys())
     b = True
     for filename in filenames:
-        if not file_passes(filename, refs, regexs):
+        if not is_deepcopy(filename) and not file_passes(filename, refs, regexs):
             print(filename, file=sys.stdout)
             b = False
     if not b:
