@@ -166,7 +166,7 @@ def file_extension(filename):
     return os.path.splitext(filename)[1].split(".")[-1].lower()
 
 # list all the files contain 'DO NOT EDIT', but are not generated
-skipped_ungenerated_files = ['build/licensing/boilerplate.py']
+skipped_ungenerated_files = ['licensing/boilerplate.py']
 
 def normalize_files(files):
     newfiles = []
