@@ -85,10 +85,10 @@ if [ "$nochanges" -eq 1 ]; then
 fi
 
 ! GO111MODULE=on go build -v ./... && exit 1
+! GO111MODULE=on go mod tidy && exit 1
 
 # 2) Create a branch and push it
 git checkout -b onosdeps$version && \
 git add go.mod go.sum && \
 git commit -m"$msg" && \
-git push upstream && \
-git checkout master
+git push upstream
