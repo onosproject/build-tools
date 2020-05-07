@@ -12,7 +12,7 @@ BRANCH=$3
 COMMIT=$4
 TOKEN=$5
 
-MESSAGE=",\"message\": \"Triggered by ${REPO} "${COMMIT}"\""
+MESSAGE=",\"message\": \"Triggered by ${PWD##*/} "${COMMIT}"\""
 body="{
 \"request\": {
   \"branch\":\"$BRANCH\"
