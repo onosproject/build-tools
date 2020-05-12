@@ -1,0 +1,48 @@
+#!/bin/bash
+set -e -u -o pipefail
+
+VERSION="1.2.3"
+
+set_version() {
+  file=$1
+  sed -i".VERBACK" -E "s/ONOS_BUILD_VERSION := .*/ONOS_BUILD_VERSION := ${VERSION}/" ${file} || true
+  sed -i".VERBACK" -E "s/ONOS_PROTOC_VERSION := .*/ONOS_PROTOC_VERSION := ${VERSION}/" ${file} || true
+  if ! diff ${file} ${file}.VERBACK; then
+    git add Makefile
+    rm Makefile.VERBACK
+    git commit -m "Release build for version ${VERSION}"
+  fi
+}
+
+dry_run=1
+
+#pushd .. >/dev/null
+
+# pull master branches of included components
+
+for component in build-tools onos-lib-go helmit onos-topo onos-ric ran-simulator config-models onos-config onos-ztp onos-cli onos-helm-charts onos-docs onos-gui gnxi-simulators
+do
+  echo "Cloning ${component}"
+  git clone git@github.com:onosproject/${component}.git --quiet
+  pushd ${component} > /dev/null && git remote set-url origin git@github.com:onosproject/${component} && git remote add upstream https://github.com/onosproject/${component}.git && ../build-tools/dev/upstream-push off && set_version "Makefile" && popd >/dev/null
+done
+
+#popd >/dev/null
+
+# build-tools
+pushd build-tools >/dev/null
+../build-tools/dev/upstream-push on
+make publish
+../build-tools/dev/upstream-push off
+popd >/dev/null
+
+# onos-lib-go
+cd onos-lib-go
+../build-tools/dev/upstream-push on
+make publish
+../build-tools/dev/upstream-push off
+
+
+
+
+
