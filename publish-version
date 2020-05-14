@@ -58,8 +58,10 @@ git remote -v | grep upstream | grep -q push && upstream="upstream" || upstream=
 git tag | grep -q $version && echo "Tag $version already exists" >&2 && exit 1
 
 if [ $# -gt 0 ]; then
-  # Validate docker logins...
-  ! egrep -q '"auths": {$' ~/.docker/config.json && echo "Not logged in to dockerhub!" >&2 && exit 1
+  if [ "${DRY_RUN}" == "0" ]; then
+    # Validate docker logins...
+    ! egrep -q '"auths": {$' ~/.docker/config.json && echo "Not logged in to dockerhub!" >&2 && exit 1
+  fi
 
   # 1) Make images
   make images || exit 1

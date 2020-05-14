@@ -1,46 +1,152 @@
 #!/bin/bash
 set -e -u -o pipefail
 
-VERSION="v1.2.3"
-
 set_version() {
   file=$1
   sed -i".VERBACK" -E "s/ONOS_BUILD_VERSION := .*/ONOS_BUILD_VERSION := ${VERSION}/" ${file} || true
   sed -i".VERBACK" -E "s/ONOS_PROTOC_VERSION := .*/ONOS_PROTOC_VERSION := ${VERSION}/" ${file} || true
-  if ! diff ${file} ${file}.VERBACK; then
+  rm -f *.VERBACK
+  if git status | grep -q "modified:" ; then
     git add Makefile
-    rm Makefile.VERBACK
     git commit -m "Release build for version ${VERSION}"
   fi
 }
 
+# set up for test run
+VERSION="v1.2.3"
 dry_run=1
+export DRY_RUN=1
+kind -q delete cluster && kind -q create cluster
 
-#pushd .. >/dev/null
+cd ..
+mkdir build-work-space
+cd build-work-space
 
 # pull master branches of included components
-
 for component in build-tools onos-lib-go helmit onos-topo onos-ric ran-simulator config-models onos-config onos-ztp onos-cli onos-helm-charts onos-docs onos-gui gnxi-simulators
 do
   echo "Cloning ${component}"
   git clone git@github.com:onosproject/${component}.git --quiet
-  pushd ${component} > /dev/null && git remote set-url origin git@github.com:onosproject/${component} && git remote add upstream https://github.com/onosproject/${component}.git && ../build-tools/dev/upstream-push off && set_version "Makefile" && popd >/dev/null
+  pushd ${component} > /dev/null && git remote set-url origin git@github.com:onosproject/${component} && git remote add upstream https://github.com/onosproject/${component}.git && ../build-tools/dev/upstream-push off && popd >/dev/null
 done
 
-#popd >/dev/null
-
 # build-tools
-pushd build-tools >/dev/null
+cd build-tools
 ../build-tools/dev/upstream-push on
 make publish
 ../build-tools/dev/upstream-push off
-popd >/dev/null
+cd ..
 
 # onos-lib-go
 cd onos-lib-go
+set_version "Makefile"
 ../build-tools/dev/upstream-push on
 make publish
 ../build-tools/dev/upstream-push off
+cd ..
+
+# helmit
+cd helmit
+../build-tools/dev/upstream-push on
+make publish
+../build-tools/dev/upstream-push off
+cd ..
+
+# onos-topo
+cd onos-topo
+../build-tools/dev/upstream-push on
+set_version "Makefile"
+make publish
+../build-tools/dev/upstream-push off
+cd ..
+
+# onos-ric
+cd onos-ric
+../build-tools/dev/upstream-push on
+set_version "Makefile"
+make publish
+../build-tools/dev/upstream-push off
+cd ..
+
+# ran-simulator
+cd ran-simulator
+../build-tools/dev/upstream-push on
+set_version "Makefile"
+make publish
+../build-tools/dev/upstream-push off
+cd ..
+
+# config-models
+cd config-models
+../build-tools/dev/upstream-push on
+set_version "Makefile"
+make publish
+../build-tools/dev/upstream-push off
+cd ..
+
+# onos-config
+cd onos-config
+../build-tools/dev/upstream-push on
+set_version "Makefile"
+make publish
+../build-tools/dev/upstream-push off
+cd ..
+
+# onos-ztp
+cd onos-ztp
+../build-tools/dev/upstream-push on
+set_version "Makefile"
+make publish
+../build-tools/dev/upstream-push off
+cd ..
+
+# onos-cli
+cd onos-cli
+../build-tools/dev/upstream-push on
+set_version "Makefile"
+make publish
+../build-tools/dev/upstream-push off
+cd ..
+
+# onos-helm-charts
+cd onos-helm-charts
+../build-tools/dev/upstream-push on
+helm dependency update sd-ran
+make publish
+../build-tools/dev/upstream-push off
+cd ..
+
+# onos-docs
+cd onos-docs
+../build-tools/dev/upstream-push on
+make publish
+../build-tools/dev/upstream-push off
+cd ..
+
+# onos-gui
+cd onos-gui
+../build-tools/dev/upstream-push on
+set_version "Makefile"
+make deps images
+make publish
+../build-tools/dev/upstream-push off
+cd ..
+
+cd gnxi-simulators
+../build-tools/dev/upstream-push on
+set_version "Makefile"
+make publish
+../build-tools/dev/upstream-push off
+cd ..
+
+
+
+
+
+
+
+
+
 
 
 
