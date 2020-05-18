@@ -144,7 +144,8 @@ cd ..
 cd onos-gui
 ../build-tools/dev/upstream-push on
 set_version "Makefile"
-docker container run --rm -it -v $(pwd):/opt -w /opt teracy/angular-cli make deps images publish
+docker container run --rm -it -v $(pwd):/opt -w /opt teracy/angular-cli make deps
+make images
 ../build-tools/dev/upstream-push off
 cd ..
 
