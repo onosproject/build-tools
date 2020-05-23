@@ -23,20 +23,16 @@
 
 # Also, the following conditions must be met:
 #   1) repo must have upstream (or origin) remote push enabled via ssh
-#   2) non-empty version number is specified
 
-version="${1}"
-shift 1
+# If no version is given use "latest" - this will get the latest tagged release of
+# the go module, which is the whole point of running the procedure. To get the
+# most recent non-tagged versions in git, use "master". To get older versions use
+# a version number e.g. v0.6.0, but this will be applied across all onosproject modules
+version=${VERSION:-"latest"}
 NAMEBASE=github.com/onosproject
 MPBASE="$NAMEBASE/config-models/modelplugin"
 MPBASELEN=`expr length "$MPBASE"`
-
-# Validate args...
-[ -z "$version" ] && echo "usage: $0 <version> <exceptions>..." >&2 && exit 1
-
-# Validate the version format.
-! [[ $version =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9][a-zA-Z0-9.]*[a-zA-Z0-9])*$ ]] && \
-  echo "Invalid version format: $version" >&2 && exit 1
+TODAY=$(date +"%Y%m%d")
 
 # Validate upstream (or origin) push URL is via SSH...
 git remote -v | grep upstream | grep -q push && upstream="upstream" || upstream="origin"
@@ -88,7 +84,7 @@ fi
 ! GO111MODULE=on go mod tidy && exit 1
 
 # 2) Create a branch and push it
-git checkout -b onosdeps$version && \
+git checkout -b onosdeps-$version-$TODAY && \
 git add go.mod go.sum && \
 git commit -m"$msg" && \
 git push upstream
