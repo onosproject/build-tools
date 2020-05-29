@@ -35,9 +35,9 @@ export SEMVER_STRICT=1
 export VERSION=v`cat VERSION`
 export DRY_RUN=1
 
-../build-tools/tag-collision-reject
-
-../build-tools/dev/upstream-push on
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
-make publish
-../build-tools/dev/upstream-push off
+if ../build-tools/tag-collision-reject; then
+  ../build-tools/dev/upstream-push on
+  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+  make publish
+  ../build-tools/dev/upstream-push off
+fi
