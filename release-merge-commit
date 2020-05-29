@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+# Copyright 2018-present Open Networking Foundation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# tag-collision-reject
+# checks that there isn't an existing tag in the repo that has this tag
+# adapted from opencord/ci-management/blob/master/jjb/shell/versiontag.sh for use in the ONOS project
+
+set -eu -o pipefail
+
+set_version() {
+  file=$1
+  sed -i".VERBACK" -E "s/ONOS_BUILD_VERSION := .*/ONOS_BUILD_VERSION := ${VERSION}/" ${file} || true
+  sed -i".VERBACK" -E "s/ONOS_PROTOC_VERSION := .*/ONOS_PROTOC_VERSION := ${VERSION}/" ${file} || true
+  rm -f *.VERBACK
+  if git status | grep -q "modified:" ; then
+    git add Makefile
+    git commit -m "Release build for version ${VERSION}"
+  fi
+}
+
+export SEMVER_STRICT=1
+export VERSION=v`cat VERSION`
+export DRY_RUN=1
+
+../build-tools/tag-collision-reject
+
+../build-tools/dev/upstream-push on
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+make publish
+../build-tools/dev/upstream-push off
