@@ -20,28 +20,37 @@
 
 set -eu -o pipefail
 
-set_version() {
-  file=$1
-  sed -i".VERBACK" -E "s/ONOS_BUILD_VERSION := .*/ONOS_BUILD_VERSION := ${VERSION}/" ${file} || true
-  sed -i".VERBACK" -E "s/ONOS_PROTOC_VERSION := .*/ONOS_PROTOC_VERSION := ${VERSION}/" ${file} || true
-  rm -f *.VERBACK
-  if git status | grep -q "modified:" ; then
-    git add Makefile
-    git commit -m "Release build for version ${VERSION}"
-  fi
-}
+# Set up the git environment to allow making commits
+repo="${PWD##*/}".git
+git remote add upstream https://github.com/onosproject/${repo}
+git remote set-url origin git@github.com:onosproject/${repo}
+git remote set-url --push upstream git@github.com:onosproject/${repo}
+
 
 export SEMVER_STRICT=1
-export VERSION=v$(< ./VERSION)
 export DRY_RUN=0
+
+# go likes 'v' to lead off a version string
+export VERSION=v$(< ./VERSION)
+
+# Travis leaves you in a detatched HEAD, return to master
 git checkout master
 
 if ../build-tools/tag-collision-reject; then
+  # Do a release build
+
+  #Log in to Docker
   echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+
+  # publish artifacts
   make publish
+
+  # Update the VERSION file to the next dev version
   vers=(${VERSION//./ })
   new_version=${vers[0]}.${vers[1]}.`expr ${vers[2]} + 1`-dev
-  echo $new_version >./VERSION
+  echo ${new_version} >./VERSION
+
+  # commit the new VERSION
   git add .
   git commit --author "ONOS CI <onos-builder@opennetworking.org>" -m "Bumping to new development version ${new_version}"
   git push origin master
