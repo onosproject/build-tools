@@ -31,7 +31,7 @@ export SEMVER_STRICT=1
 export DRY_RUN=0
 
 # go likes 'v' to lead off a version string
-export VERSION=v$(< ./VERSION)
+export VERSION=$(< ./VERSION)
 
 # Travis leaves you in a detatched HEAD, return to master
 git checkout master
