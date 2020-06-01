@@ -33,7 +33,8 @@ set_version() {
 
 export SEMVER_STRICT=1
 export VERSION=v`cat VERSION`
-export DRY_RUN=1
+export DRY_RUN=0
+git checkout master
 
 if ../build-tools/tag-collision-reject; then
   echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
