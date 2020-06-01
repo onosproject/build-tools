@@ -39,11 +39,11 @@ git checkout master
 if ../build-tools/tag-collision-reject; then
   echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
   make publish
+  vers=(${VERSION//./ })
+  new_version=${vers[0]}.${vers[1]}.`expr ${vers[2]} + 1`-dev
+  echo $new_version >./VERSION
+  git add .
+  git commit --author "ONOS CI <onos-builder@opennetworking.org>" -m "Bumping to new development version ${new_version}"
+  git push origin master
 fi
 
-vers=(${VERSION//./ })
-new_version=${vers[0]}.${vers[1]}.`expr ${vers[2]} + 1`-dev
-echo $new_version >./VERSION
-git add .
-git commit --author "ONOS CI <onos-builder@opennetworking.org>" -m "Bumping to new development version ${new_version}"
-git push origin master
