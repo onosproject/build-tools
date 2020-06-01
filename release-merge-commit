@@ -36,8 +36,6 @@ export VERSION=v`cat VERSION`
 export DRY_RUN=1
 
 if ../build-tools/tag-collision-reject; then
-  sh -x ../build-tools/dev/upstream-push on
   echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
   make publish
-  sh -x ../build-tools/dev/upstream-push off
 fi
