@@ -46,8 +46,9 @@ if ../build-tools/tag-collision-reject; then
   # Log in to Docker
   echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
 
-  # The go build can pollute these files
+  # The go build can pollute the tree
   git checkout .
+  git clean -fx
 
   # publish artifacts
   make publish
