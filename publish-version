@@ -52,7 +52,7 @@ git remote -v | grep upstream | grep -q push && upstream="upstream" || upstream=
       echo "Not on master branch" >&2 && exit 1
 
 ! git status -b | grep -q "nothing to commit, working tree clean" && \
-      echo "There are modified files" >&2 && exit 1
+      echo "There are modified files" >&2 && git status && exit 1
 
 # Validate tag does not already exist
 git tag | grep -q $version && echo "Tag $version already exists" >&2 && exit 1
