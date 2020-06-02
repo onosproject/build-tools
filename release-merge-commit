@@ -40,6 +40,9 @@ export VERSION=v${VERSION}
 # Travis leaves you in a detatched HEAD, return to master
 git checkout master
 
+# The go build can pollute these files
+git checkout go.mod go.sum
+
 if ../build-tools/tag-collision-reject; then
   # Do a release build
 
