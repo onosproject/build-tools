@@ -36,9 +36,13 @@ rootdir = os.path.abspath(rootdir)
 parser.add_argument(
     "--rootdir", default=rootdir, help="root directory to examine")
 
-default_boilerplate_dir = currentdir
+default_boilerplates_dir = currentdir + "/boilerplates/"
 parser.add_argument(
-    "--boilerplate-dir", default=default_boilerplate_dir)
+    "--boilerplates-dir", default=default_boilerplates_dir)
+
+default_boilerplate = "Apache-2.0"
+parser.add_argument(
+    "--boilerplate", default=default_boilerplate)
 
 parser.add_argument(
     "-v", "--verbose",
@@ -59,8 +63,8 @@ skipped_dirs = args.skipped_dir
 
 def get_refs():
     refs = {}
-
-    for path in glob.glob(os.path.join(args.boilerplate_dir, "boilerplate.*.txt")):
+    boilerplate_dir = args.boilerplates_dir + args.boilerplate
+    for path in glob.glob(os.path.join(boilerplate_dir, "boilerplate.*.txt")):
         extension = os.path.basename(path).split(".")[1]
 
         ref_file = open(path, 'r')
