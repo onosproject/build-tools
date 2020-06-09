@@ -10,9 +10,11 @@ awk '
     gsub(".*Copyright ", "", year);
     gsub(" .*", "", year);
     gsub("-present", "", year);
+    barePrefix = prefix;
+    gsub(" $", "", barePrefix);
 
     print prefix "SPDX-FileCopyrightText: " year "-present Open Networking Foundation <info@opennetworking.org>";
-    print prefix
+    print barePrefix
     print prefix "SPDX-License-Identifier: Apache-2.0";
 }
 
