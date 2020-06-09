@@ -26,4 +26,4 @@ awk '
     skippingHeader = 0;
 }
 
-' $1
+' $1 > $1.aux && mv $1.aux $1
