@@ -43,9 +43,11 @@ shift 1
   echo "Invalid version format: $version" >&2 && exit 1
 
 # Validate upstream (or origin) push URL is via SSH...
-git remote -v | grep upstream | grep -q push && upstream="upstream" || upstream="origin"
-! git remote -v | grep $upstream | grep push | cut -f2 | cut -d\  -f1 | grep -q 'git@github.com:' && \
+if [ "${dry_run}" == "0" ]; then
+  git remote -v | grep upstream | grep -q push && upstream="upstream" || upstream="origin"
+  ! git remote -v | grep $upstream | grep push | cut -f2 | cut -d\  -f1 | grep -q 'git@github.com:' && \
       echo "Upstream remote not setup with SSH push URL" >&2 && exit 1
+fi
 
 # Validate we are on master
 ! git status -b | grep "On branch" | cut -d\  -f3 | grep -q master && \
