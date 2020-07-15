@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+# Copyright 2018-present Open Networking Foundation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -eu -o pipefail
+
+# Set up the git environment to allow making commits
+repo="${PWD##*/}".git
+
+# TODO - need to set up the git remotes on Travis
+#git remote add upstream https://github.com/onosproject/${repo}
+#git remote set-url origin git@github.com:onosproject/${repo}
+#git remote set-url --push upstream git@github.com:onosproject/${repo}
+
+# TODO this should be HEAD or something
+modified_charts=$(git show HEAD | grep Chart.yaml | grep +++ | cut -d " " -f2 | sed s^b/^^) || true
+
+staging_area="staging"
+modified_component_charts=""
+for chart in ${modified_charts}; do
+    #git diff 4d24455bff3d32cd0fd4e08cf19ce91f57e71b2c ${chart}
+    version=$(git diff HEAD HEAD@\{1\} ${chart} | grep +version: | cut -d " " -f2) || true
+    if [ ! -z ${version} ]; then
+        # figure out the tag for this chart
+        component=`echo ${chart} | cut -d "/" -f1`
+        modified_component_charts="${modified_component_charts} ${component}"
+        tag="${component}-${version}"
+        echo $chart bumped to version $version for component $component new tag is $tag
+
+        # publish the tag
+        # TODO - publish the tag for real
+        echo ../build-tools/publish-version ${tag}
+    fi
+done
+
+if [ "${modified_component_charts}" = "" ]; then
+    echo No charts were modified
+    exit 0
+fi
+
+# create the tgz files for the modified charts
+onos_helm_charts_dir="onos-helm-charts"
+onos_helm_charts="${staging_area}/${onos_helm_charts_dir}"
+mkdir -p ${onos_helm_charts}
+for modified_component in ${modified_component_charts}; do
+    helm package ${modified_component}
+    component_dir=$(basename ${modified_component}*.tgz .tgz)
+    mkdir ${onos_helm_charts}/${component_dir}
+    mv ${modified_component}*.tgz ${onos_helm_charts}/${component_dir}/
+done
+
+chart_repo_url="https://charts.onosproject.org"
+chart_index_url="${chart_repo_url}/index.yaml"
+cd ${staging_area}
+
+# Fetch the existing published chart manifest
+curl -u onfstaff:sooW3beeM4taIieJ9vo3hquuch -sLo current-index.yaml ${chart_index_url}
+
+# merge the new charts with the existing published ones
+helm repo index ${onos_helm_charts_dir} --url ${chart_repo_url} --merge current-index.yaml
+#rm current-index.yaml
+mv ${onos_helm_charts_dir}/index.yaml .
+
+# generate static index files
+go run github.com/onosproject/onos-helm-charts/build/cmd/index2md > README.md
+
+cd ..
+
+# use rsync to update the files on the webserver
+# TODO key stuff is different on Travis
+chmod -R g+r ${staging_area}/
+#rsync -rvzh -e "ssh -i ~/ssh-onos-builder/id_rsa" ${staging_area}/ travis@aethercharts.onosproject.org:/srv/sites/charts.onosproject.org
+# rsync -rvzh -e "ssh -i ~/ssh-onos-builder/id_rsa" released-charts/ travis@aethercharts.onosproject.org:/srv/sites/aethercharts.onosproject.org
+
+
