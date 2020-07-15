@@ -17,7 +17,7 @@
 set -eu -o pipefail
 
 if [ -z ${1+x} ]; then
-    echo Usage: release-chart-merge-commit chart-repo-URL
+    echo Usage: release-chart-merge-commit chart-repo-URL website-user website-password
     exit 1
 fi
 
@@ -27,15 +27,16 @@ if ! echo ${chart_repo_url} | grep ^http; then
     exit 1
 fi
 
+WEBSITE_USER=$2
+WEBSITE_PASSWORD=$3
+
 # Set up the git environment to allow making commits
 repo="${PWD##*/}".git
 
-# TODO - need to set up the git remotes on Travis
-#git remote add upstream https://github.com/onosproject/${repo}
-#git remote set-url origin git@github.com:onosproject/${repo}
-#git remote set-url --push upstream git@github.com:onosproject/${repo}
+git remote add upstream https://github.com/onosproject/${repo}
+git remote set-url origin git@github.com:onosproject/${repo}
+git remote set-url --push upstream git@github.com:onosproject/${repo}
 
-# TODO this should be HEAD or something
 modified_charts=$(git show HEAD | grep Chart.yaml | grep +++ | cut -d " " -f2 | sed s^b/^^) || true
 
 staging_area="staging"
@@ -50,8 +51,7 @@ for chart in ${modified_charts}; do
         echo $chart bumped to version $version for component $component new tag is $tag
 
         # publish the tag
-        # TODO - publish the tag for real
-        echo ../build-tools/publish-version ${tag}
+        ../build-tools/publish-version ${tag}
     fi
 done
 
@@ -75,12 +75,12 @@ chart_index_url="${chart_repo_url}/index.yaml"
 cd ${staging_area}
 
 # Fetch the existing published chart manifest
-curl -u onfstaff:sooW3beeM4taIieJ9vo3hquuch -sLo current-index.yaml ${chart_index_url}
+curl -u ${WEBSITE_USER}:${WEBSITE_PASSWORD} -sLo current-index.yaml ${chart_index_url}
 
 # merge the new charts with the existing published ones
 helm repo index ${onos_helm_charts_dir} --url ${chart_repo_url}/onos-helm-charts --merge current-index.yaml
 
-#rm current-index.yaml
+rm current-index.yaml
 mv ${onos_helm_charts_dir}/index.yaml .
 
 # generate static index files
@@ -89,9 +89,7 @@ go run github.com/onosproject/onos-helm-charts/build/cmd/index2md > README.md
 cd ..
 
 # use rsync to update the files on the webserver
-# TODO key stuff is different on Travis
 chmod -R g+r ${staging_area}/
-#rsync -rvzh -e "ssh -i ~/ssh-onos-builder/id_rsa" ${staging_area}/ travis@aethercharts.onosproject.org:/srv/sites/charts.onosproject.org
-# rsync -rvzh -e "ssh -i ~/ssh-onos-builder/id_rsa" released-charts/ travis@aethercharts.onosproject.org:/srv/sites/aethercharts.onosproject.org
+rsync -rvzh ${staging_area}/ travis@aethercharts.onosproject.org:/srv/sites/charts.onosproject.org
 
 
