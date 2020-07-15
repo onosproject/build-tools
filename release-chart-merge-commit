@@ -16,6 +16,17 @@
 
 set -eu -o pipefail
 
+if [ -z ${1+x} ]; then
+    echo Usage: release-chart-merge-commit chart-repo-URL
+    exit 1
+fi
+
+chart_repo_url=$1
+if ! echo ${chart_repo_url} | grep ^http; then
+    echo chart repo URL is invalid
+    exit 1
+fi
+
 # Set up the git environment to allow making commits
 repo="${PWD##*/}".git
 
@@ -30,7 +41,6 @@ modified_charts=$(git show HEAD | grep Chart.yaml | grep +++ | cut -d " " -f2 | 
 staging_area="staging"
 modified_component_charts=""
 for chart in ${modified_charts}; do
-    #git diff 4d24455bff3d32cd0fd4e08cf19ce91f57e71b2c ${chart}
     version=$(git diff HEAD HEAD@\{1\} ${chart} | grep +version: | cut -d " " -f2) || true
     if [ ! -z ${version} ]; then
         # figure out the tag for this chart
@@ -61,7 +71,6 @@ for modified_component in ${modified_component_charts}; do
     mv ${modified_component}*.tgz ${onos_helm_charts}/${component_dir}/
 done
 
-chart_repo_url="https://charts.onosproject.org"
 chart_index_url="${chart_repo_url}/index.yaml"
 cd ${staging_area}
 
@@ -70,6 +79,7 @@ curl -u onfstaff:sooW3beeM4taIieJ9vo3hquuch -sLo current-index.yaml ${chart_inde
 
 # merge the new charts with the existing published ones
 helm repo index ${onos_helm_charts_dir} --url ${chart_repo_url}/onos-helm-charts --merge current-index.yaml
+
 #rm current-index.yaml
 mv ${onos_helm_charts_dir}/index.yaml .
 
