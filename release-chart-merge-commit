@@ -69,7 +69,7 @@ cd ${staging_area}
 curl -u onfstaff:sooW3beeM4taIieJ9vo3hquuch -sLo current-index.yaml ${chart_index_url}
 
 # merge the new charts with the existing published ones
-helm repo index ${onos_helm_charts_dir} --url ${chart_repo_url} --merge current-index.yaml
+helm repo index ${onos_helm_charts_dir} --url ${chart_repo_url}/onos-helm-charts --merge current-index.yaml
 #rm current-index.yaml
 mv ${onos_helm_charts_dir}/index.yaml .
 
