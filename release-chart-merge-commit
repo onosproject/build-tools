@@ -58,10 +58,10 @@ for chart in ${modified_charts}; do
         echo $chart bumped to version $version for component $component new tag is $tag
 
         # Tag the tree
-        #git tag $tag
+        git tag $tag
 
         # publish the tag
-        #git push origin ${tag}
+        git push origin ${tag}
     fi
 done
 
@@ -75,6 +75,7 @@ onos_helm_charts_dir="onos-helm-charts"
 onos_helm_charts="${staging_area}/${onos_helm_charts_dir}"
 mkdir -p ${onos_helm_charts}
 for modified_component in ${modified_component_charts}; do
+    helm dependency update ${modified_component}
     helm package ${modified_component}
     component_dir=$(basename ${modified_component}*.tgz .tgz)
     mkdir ${onos_helm_charts}/${component_dir}
