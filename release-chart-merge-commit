@@ -37,6 +37,12 @@ git remote add upstream https://github.com/onosproject/${repo}
 git remote set-url origin git@github.com:onosproject/${repo}
 git remote set-url --push upstream git@github.com:onosproject/${repo}
 
+# load up the Helm environment
+helm repo add cord https://charts.opencord.org
+helm repo add atomix https://charts.atomix.io
+helm repo add onos https://charts.onosproject.org
+helm repo update
+
 modified_charts=$(git show HEAD | grep Chart.yaml | grep +++ | cut -d " " -f2 | sed s^b/^^) || true
 
 staging_area="staging"
