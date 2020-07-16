@@ -16,12 +16,10 @@
 
 set -eu -o pipefail
 
-git diff HEAD^ HEAD
 modified_charts=$(git diff HEAD^ HEAD | grep Chart.yaml | grep +++ | cut -d " " -f2 | sed s^b/^^) || true
 
 modified_component_charts=""
 for chart in ${modified_charts}; do
-    git diff HEAD^ HEAD ${chart}
     version=$(git diff HEAD^ HEAD ${chart} | grep +version: | cut -d " " -f2) || true
     if [ ! -z ${version} ]; then
         # figure out the tag for this chart
