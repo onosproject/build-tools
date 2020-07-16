@@ -16,7 +16,7 @@
 
 set -eu -o pipefail
 
-git git diff HEAD^ HEAD
+git diff HEAD^ HEAD
 modified_charts=$(git diff HEAD^ HEAD | grep Chart.yaml | grep +++ | cut -d " " -f2 | sed s^b/^^) || true
 
 modified_component_charts=""
