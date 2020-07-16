@@ -20,6 +20,7 @@ modified_charts=$(git show HEAD | grep Chart.yaml | grep +++ | cut -d " " -f2 | 
 
 modified_component_charts=""
 for chart in ${modified_charts}; do
+    git diff HEAD^ HEAD ${chart}
     version=$(git diff HEAD^ HEAD ${chart} | grep +version: | cut -d " " -f2) || true
     if [ ! -z ${version} ]; then
         # figure out the tag for this chart
