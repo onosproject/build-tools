@@ -94,6 +94,7 @@ cd ..
 
 # use rsync to update the files on the webserver
 chmod -R g+r ${staging_area}/
+ssh-keyscan -H aethercharts.onosproject.org >> ~/.ssh/known_hosts
 rsync -rvzh ${staging_area}/ travis@aethercharts.onosproject.org:/srv/sites/charts.onosproject.org
 
 
