@@ -16,6 +16,7 @@
 
 set -eu -o pipefail
 
+git show HEAD
 modified_charts=$(git show HEAD | grep Chart.yaml | grep +++ | cut -d " " -f2 | sed s^b/^^) || true
 
 modified_component_charts=""
