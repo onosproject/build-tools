@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -eu -o pipefail
+set -eux -o pipefail
 
 if [ -z ${1+x} ]; then
     echo Usage: release-chart-merge-commit chart-repo-URL website-user website-password
@@ -27,8 +27,8 @@ if ! echo ${chart_repo_url} | grep ^http; then
     exit 1
 fi
 
-WEBSITE_USER=$2
-WEBSITE_PASSWORD=$3
+WEBSITE_USER="a"
+WEBSITE_PASSWORD="b"
 
 # Set up the git environment to allow making commits
 repo="${PWD##*/}".git
