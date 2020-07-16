@@ -52,7 +52,7 @@ for chart in ${modified_charts}; do
         echo $chart bumped to version $version for component $component new tag is $tag
 
         # Tag the tree
-        git tag $tag
+        #git tag $tag
 
         # publish the tag
         #git push origin ${tag}
