@@ -101,8 +101,9 @@ mv ${onos_helm_charts_dir}/index.yaml .
 cd ..
 
 # use rsync to update the files on the webserver
+chart_directory=${chart_repo_url#"https://"}
 chmod -R g+r ${staging_area}/
 ssh-keyscan -H aethercharts.onosproject.org >> ~/.ssh/known_hosts
-rsync -rvzh ${staging_area}/ travis@aethercharts.onosproject.org:/srv/sites/charts.onosproject.org
+rsync -rvzh ${staging_area}/ travis@aethercharts.onosproject.org:/srv/sites/${chart_directory}
 
 
