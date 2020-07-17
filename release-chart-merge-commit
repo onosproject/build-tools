@@ -27,8 +27,8 @@ if ! echo ${chart_repo_url} | grep ^http; then
     exit 1
 fi
 
-WEBSITE_USER="a"
-WEBSITE_PASSWORD="b"
+WEBSITE_USER=$2
+WEBSITE_PASSWORD=$3
 
 # Set up the git environment to allow making commits
 repo="${PWD##*/}".git
@@ -41,6 +41,7 @@ git remote set-url --push upstream git@github.com:onosproject/${repo}
 helm repo add cord https://charts.opencord.org
 helm repo add atomix https://charts.atomix.io
 helm repo add onos https://charts.onosproject.org
+helm repo add sdran --username ${WEBSITE_USER} --password ${WEBSITE_PASSWORD} https://sdrancharts.onosproject.org
 helm repo update
 
 modified_charts=$(git show HEAD | grep Chart.yaml | grep +++ | cut -d " " -f2 | sed s^b/^^) || true
