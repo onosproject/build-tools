@@ -96,7 +96,8 @@ rm current-index.yaml
 mv ${onos_helm_charts_dir}/index.yaml .
 
 # generate static index files
-#go run github.com/onosproject/onos-helm-charts/build/cmd/index2md > README.md
+go run github.com/onosproject/onos-helm-charts/build/cmd/index2md -file index >index.html
+go run github.com/onosproject/onos-helm-charts/build/cmd/index2md -file index -html >README.md
 
 cd ..
 
