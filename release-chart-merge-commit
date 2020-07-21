@@ -91,15 +91,11 @@ curl -u ${WEBSITE_USER}:${WEBSITE_PASSWORD} -sLo current-index.yaml ${chart_inde
 
 # merge the new charts with the existing published ones
 helm repo index ${onos_helm_charts_dir} --url ${chart_repo_url}/onos-helm-charts --merge current-index.yaml
-
 rm current-index.yaml
 mv ${onos_helm_charts_dir}/index.yaml .
 
 # generate static index files
-if [ ! -f ../../onos-helm-charts/build/_output/index2md ]; then
-  pushd ../../ && git clone https://github.com/onosproject/onos-helm-charts.git && cd onos-helm-charts && go build -o build/_output/index2md ./build/cmd/index2md && popd
-fi
-
+pushd ../../onos-helm-charts && go build -o build/_output/index2md ./build/cmd/index2md && popd
 ../../onos-helm-charts/build/_output/index2md -file index >index.html
 ../../onos-helm-charts/build/_output/index2md -file index -html >README.md
 
