@@ -8,7 +8,7 @@ fi
 
 env
 trigger=${TRAVIS_JOB_NAME%% *}
-if [ $trigger == "Triggered" ]; then
+if [ "$trigger" == "Triggered" ]; then
   # This is a triggered job, don't make any children
   exit 0
 fi
