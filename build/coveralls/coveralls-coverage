@@ -1,0 +1,36 @@
+#!/bin/bash
+# Copyright 2020-present Open Networking Foundation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Script to generate coverage data and upload to coveralls
+
+set -e -u -o pipefail
+
+goveralls_cmd="goveralls -coverprofile=overalls.coverprofile -service travis-pro"
+if [ "$#" -eq 0 ]; then
+  true
+elif [ "$#" -eq 1 ]; then
+  goveralls_cmd="$goveralls_cmd -repotoken $1"
+else
+  echo USAGE: coveralls-coverage repo-token
+  exit 1
+fi
+
+go get github.com/go-playground/overalls && go get github.com/mattn/goveralls
+
+overalls -project="$GOPATH"/src/github.com/onosproject/onos-ric -concurrency 2 -covermode=count -ignore=".git,vendor,models,tools"
+mv overalls.coverprofile overalls.coverprofile.orig
+grep -v .pb.go overalls.coverprofile.orig >overalls.coverprofile
+$goveralls_cmd || true
+
