@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+image=$1
+ip=$2
+
+docker tag ${image} ${ip}/${image}
+docker push ${ip}/${image}
