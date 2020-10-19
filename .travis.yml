@@ -1,0 +1,33 @@
+sudo: false
+
+language: go
+
+go:
+  - '1.14.x'
+
+services:
+  - docker
+
+notifications:
+  email: false
+
+branches:
+  only:
+    - master
+
+cache:
+  directories:
+  - $GOPATH/pkg/mod
+
+jobs:
+  include:
+    - stage: tests
+      if: type == pull_request || fork == false
+      script:
+        - make images
+
+    - stage: release
+      if: type != pull_request && fork == false
+      script:
+        - bash ./build/bin/push-images
+        - bash ../build-tools/release-merge-commit
