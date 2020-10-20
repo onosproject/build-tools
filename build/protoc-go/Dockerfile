@@ -3,10 +3,10 @@ FROM golang:1.14
 RUN apt-get update && \
     apt-get install unzip
 
-RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.11.4/protoc-3.11.4-linux-x86_64.zip && \
-    unzip -o protoc-3.11.4-linux-x86_64.zip -d /usr/local bin/protoc && \
-    unzip -o protoc-3.11.4-linux-x86_64.zip -d /usr/local include/* && \
-    rm -rf protoc-3.11.4-linux-x86_64.zip
+RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.13.0/protoc-3.13.0-linux-x86_64.zip && \
+    unzip -o protoc-3.13.0-linux-x86_64.zip -d /usr/local bin/protoc && \
+    unzip -o protoc-3.13.0-linux-x86_64.zip -d /usr/local include/* && \
+    rm -rf protoc-3.13.0-linux-x86_64.zip
 
 RUN go get -u github.com/golang/protobuf/protoc-gen-go && \
     go get -u github.com/gogo/protobuf/proto && \
@@ -17,7 +17,8 @@ RUN go get -u github.com/golang/protobuf/protoc-gen-go && \
     go get -u github.com/gogo/protobuf/protoc-gen-gogofaster && \
     go get -u github.com/gogo/protobuf/protoc-gen-gogoslick && \
     go get -u github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc && \
-    go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+    go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway && \
+    go get -u github.com/envoyproxy/protoc-gen-validate
 
 RUN mkdir -p /go/src/github.com/google && \
     git clone --branch master https://github.com/google/protobuf /go/src/github.com/google/protobuf && \
