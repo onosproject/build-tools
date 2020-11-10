@@ -20,12 +20,13 @@
 
 set -eu -o pipefail
 
+project=${1:-onosproject}
+
 # Set up the git environment to allow making commits
 repo="${PWD##*/}".git
-git remote add upstream https://github.com/onosproject/${repo}
-git remote set-url origin git@github.com:onosproject/${repo}
-git remote set-url --push upstream git@github.com:onosproject/${repo}
-
+git remote add upstream https://github.com/${project}/${repo}
+git remote set-url origin git@github.com:${project}/${repo}
+git remote set-url --push upstream git@github.com:${project}/${repo}
 
 export SEMVER_STRICT=1
 export DRY_RUN=0
