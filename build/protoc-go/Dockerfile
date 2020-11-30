@@ -1,7 +1,7 @@
 FROM golang:1.14
 
 RUN apt-get update && \
-    apt-get install unzip
+    apt-get install -y unzip python3 python3-pip
 
 RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.13.0/protoc-3.13.0-linux-x86_64.zip && \
     unzip -o protoc-3.13.0-linux-x86_64.zip -d /usr/local bin/protoc && \
@@ -27,6 +27,8 @@ RUN mkdir -p /go/src/github.com/google && \
     wget "https://github.com/grpc/grpc-web/releases/download/1.0.7/protoc-gen-grpc-web-1.0.7-linux-x86_64" --quiet && \
     mv protoc-gen-grpc-web-1.0.7-linux-x86_64 /usr/local/bin/protoc-gen-grpc-web && \
     chmod +x /usr/local/bin/protoc-gen-grpc-web
+
+RUN pip3 install --pre "betterproto[compiler]"
 
 WORKDIR "/go/src/github.com/"
 
