@@ -14,9 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# tag-collision-reject
-# checks that there isn't an existing tag in the repo that has this tag
-# adapted from opencord/ci-management/blob/master/jjb/shell/versiontag.sh for use in the ONOS project
+# release-merge-commit
+# publishes artifacts for merge commits that bump the version
 
 set -eu -o pipefail
 
