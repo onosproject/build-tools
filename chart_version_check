@@ -81,6 +81,12 @@ do
 
   # create a list of files that were changed in the chart
   for file in $changed_files; do
+    if [[ $file =~ /tests/ ]]
+    then
+      # test files don't count for version checking
+      continue
+    fi
+
     if [[ $file =~ ^$chartdir/ ]]
     then
       chart_changed_files+=$'\n'

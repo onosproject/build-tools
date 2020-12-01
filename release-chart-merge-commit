@@ -27,8 +27,8 @@ if ! echo ${chart_repo_url} | grep ^http; then
     exit 1
 fi
 
-WEBSITE_USER="a"
-WEBSITE_PASSWORD="b"
+WEBSITE_USER=$2
+WEBSITE_PASSWORD=$3
 
 # Set up the git environment to allow making commits
 repo="${PWD##*/}".git
@@ -41,6 +41,7 @@ git remote set-url --push upstream git@github.com:onosproject/${repo}
 helm repo add cord https://charts.opencord.org
 helm repo add atomix https://charts.atomix.io
 helm repo add onos https://charts.onosproject.org
+helm repo add sdran --username ${WEBSITE_USER} --password ${WEBSITE_PASSWORD} https://sdrancharts.onosproject.org
 helm repo update
 
 modified_charts=$(git show HEAD | grep Chart.yaml | grep +++ | cut -d " " -f2 | sed s^b/^^) || true
@@ -90,18 +91,20 @@ curl -u ${WEBSITE_USER}:${WEBSITE_PASSWORD} -sLo current-index.yaml ${chart_inde
 
 # merge the new charts with the existing published ones
 helm repo index ${onos_helm_charts_dir} --url ${chart_repo_url}/onos-helm-charts --merge current-index.yaml
-
 rm current-index.yaml
 mv ${onos_helm_charts_dir}/index.yaml .
 
 # generate static index files
-#go run github.com/onosproject/onos-helm-charts/build/cmd/index2md > README.md
+pushd ../../build-tools && go build -o build/_output/index2md ./build/cmd/index2md && popd
+../../build-tools/build/_output/index2md -file index >index.html
+../../build-tools/build/_output/index2md -file index -html >README.md
 
 cd ..
 
 # use rsync to update the files on the webserver
+chart_directory=${chart_repo_url#"https://"}
 chmod -R g+r ${staging_area}/
 ssh-keyscan -H aethercharts.onosproject.org >> ~/.ssh/known_hosts
-rsync -rvzh ${staging_area}/ travis@aethercharts.onosproject.org:/srv/sites/charts.onosproject.org
+rsync -rvzh ${staging_area}/ travis@aethercharts.onosproject.org:/srv/sites/${chart_directory}
 
 
