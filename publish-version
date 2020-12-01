@@ -38,10 +38,6 @@ shift 1
 # Validate args...
 [ -z "$version" ] && echo "usage: $(dirname $0) <version> [<docker-image>...]" >&2 && exit 1
 
-# Validate the version format.
-! [[ $version =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9][a-zA-Z0-9.]*[a-zA-Z0-9])*[\/a-z]*$ ]] && \
-  echo "Invalid version format: $version" >&2 && exit 1
-
 # Validate upstream (or origin) push URL is via SSH...
 if [ "${dry_run}" == "0" ]; then
   git remote -v | grep upstream | grep -q push && upstream="upstream" || upstream="origin"
