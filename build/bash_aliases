@@ -3,7 +3,7 @@
 export GOPATH=$(go env GOPATH)
 export GO111MODULE=on
 
-export CDPATH="$GOPATH/src/github.com/onosproject:$CDPATH"
+export CDPATH=".:$GOPATH/src/github.com/onosproject:$CDPATH"
 
 # Changes working directory to the root of the projects
 function ocd {
@@ -79,7 +79,7 @@ function godocPackages {
         | bash
 }
 
-export ONOS_REPOS="onos-topo onos-config onos-ric ran-simulator onos-control onos-ztp onos-cli onos-test"
+export ONOS_REPOS="onos-lib-go onos-api onos-topo onos-config onos-e2t onos-e2sub onos-ric-sdk-go onos-cli onos-test onos-helm-charts"
 
 # Pull All Repos
 function par {
