@@ -84,6 +84,7 @@ else
   echo "Skipping tag push of $version"
 fi
 
+docker_tag=${version/[a-z-_]*\//}
 if [ $# -gt 0 ]; then
   # 3) Push each docker image to docker hub; assumed docker login was already run
   for image in "$@"; do
@@ -91,7 +92,7 @@ if [ $# -gt 0 ]; then
     id=$(docker images $image:latest -q)
     docker tag $id $image:$version
     if [ "${dry_run}" == "0" ]; then
-      docker push $image:$version
+      docker push $image:$docker_tag
     else
       echo "Skipping push of image $image"
     fi
