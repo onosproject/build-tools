@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash 
 
 # The IP address of the dev machine
 ip=$1
@@ -8,7 +8,7 @@ ip=$1
 sudo apt-get update
 
 # Get Docker dependencies
-sudo apt-get install \
+sudo apt-get --yes install \
     apt-transport-https \
     ca-certificates \
     curl \
@@ -27,16 +27,16 @@ sudo add-apt-repository \
 
 # Install Docker CE
 sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt-get --yes install docker-ce docker-ce-cli containerd.io
 
 # Enable Docker access without sudo
 # https://docs.docker.com/engine/install/linux-postinstall/
 sudo groupadd docker
 sudo usermod -aG docker ran
-newgrp docker
+newgrp docker << NEWGRP
 
 # Add the IP as an insecure Docker registry
-sudo printf '{"insecure-registries":["%s:5000"]}' ${ip} > /etc/docker/daemon.json
+sudo printf '{"insecure-registries":["%s:5000"]}' \${ip} > /etc/docker/daemon.json
 sudo service docker restart
 
 # Install Go
@@ -54,7 +54,7 @@ mv ./kind /usr/bin/
 
 # Install kubectl
 # https://kubernetes.io/docs/tasks/tools/install-kubectl/
-curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -LO "https://storage.googleapis.com/kubernetes-release/release/\$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/bin
 
@@ -84,10 +84,10 @@ set -o errexit
 reg_name="kind-registry"
 reg_ip="%s"
 reg_port="5000"
-running="$(docker inspect -f '"'"'{{.State.Running}}'"'"' "${reg_name}" 2>/dev/null || true)"
-if [ "${running}" != '"'"'true'"'"' ]; then
+running="\$(docker inspect -f '"'"'{{.State.Running}}'"'"' "\${reg_name}" 2>/dev/null || true)"
+if [ "\${running}" != '"'"'true'"'"' ]; then
   docker run \
-    -d --restart=always -p "${reg_port}:5000" --name "${reg_name}" \
+    -d --restart=always -p "\${reg_port}:5000" --name "\${reg_name}" \
     registry:2
 fi
 
@@ -97,18 +97,19 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 containerdConfigPatches:
 - |-
-  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."${reg_ip}:${reg_port}"]
-    endpoint = ["http://${reg_ip}:${reg_port}"]
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."\${reg_ip}:\${reg_port}"]
+    endpoint = ["http://\${reg_ip}:\${reg_port}"]
 EOF
 
 # connect the registry to the cluster network
-docker network connect "kind" "${reg_name}"
+docker network connect "kind" "\${reg_name}"
 
 # tell https://tilt.dev to use the registry
 # https://docs.tilt.dev/choosing_clusters.html#discovering-the-registry
-for node in $(kind get nodes); do
-  kubectl annotate node "${node}" "kind.x-k8s.io/registry=${reg_ip}:${reg_port}";
-done' ${ip} >> kind-create-cluster
+for node in \$(kind get nodes); do
+  kubectl annotate node "\${node}" "kind.x-k8s.io/registry=\${reg_ip}:\${reg_port}";
+done' \${ip} >> kind-create-cluster
 
 chmod +x ./kind-create-cluster
 mv ./kind-create-cluster /usr/bin
+NEWGRP
