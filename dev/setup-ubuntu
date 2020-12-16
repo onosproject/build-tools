@@ -36,7 +36,7 @@ sudo usermod -aG docker ran
 newgrp docker << NEWGRP
 
 # Add the IP as an insecure Docker registry
-sudo printf '{"insecure-registries":["%s:5000"]}' \${ip} > /etc/docker/daemon.json
+sudo printf '{"insecure-registries":["%s:5000"]}' ${ip} > /etc/docker/daemon.json
 sudo service docker restart
 
 # Install Go
@@ -82,7 +82,7 @@ set -o errexit
 
 # create registry container unless it already exists
 reg_name="kind-registry"
-reg_ip="%s"
+reg_ip="${ip}"
 reg_port="5000"
 running="\$(docker inspect -f '"'"'{{.State.Running}}'"'"' "\${reg_name}" 2>/dev/null || true)"
 if [ "\${running}" != '"'"'true'"'"' ]; then
@@ -108,7 +108,7 @@ docker network connect "kind" "\${reg_name}"
 # https://docs.tilt.dev/choosing_clusters.html#discovering-the-registry
 for node in \$(kind get nodes); do
   kubectl annotate node "\${node}" "kind.x-k8s.io/registry=\${reg_ip}:\${reg_port}";
-done' \${ip} >> kind-create-cluster
+done' >> kind-create-cluster
 
 chmod +x ./kind-create-cluster
 mv ./kind-create-cluster /usr/bin
