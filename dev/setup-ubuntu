@@ -12,6 +12,8 @@ sudo apt-get --yes install \
     apt-transport-https \
     ca-certificates \
     curl \
+    make \
+    gcc \
     gnupg-agent \
     software-properties-common
 
@@ -113,3 +115,7 @@ done' >> kind-create-cluster
 chmod +x ./kind-create-cluster
 mv ./kind-create-cluster /usr/bin
 NEWGRP
+
+# Install helmit
+GO111MODULE=on go get github.com/onosproject/helmit/cmd/helmit
+sudo cp $HOME/go/bin/helmit /usr/local/bin
