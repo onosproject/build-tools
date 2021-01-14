@@ -117,5 +117,6 @@ mv ./kind-create-cluster /usr/bin
 NEWGRP
 
 # Install helmit
+PATH=$PATH:/usr/local/go/bin
 GO111MODULE=on go get github.com/onosproject/helmit/cmd/helmit
 sudo cp $HOME/go/bin/helmit /usr/local/bin
