@@ -3,6 +3,8 @@
 # The IP address of the dev machine
 ip=$1
 
+[ -z $1 ] && echo "Missing IP address. Aborting!" && exit 1
+
 # Install Docker
 # https://docs.docker.com/engine/install/ubuntu/
 sudo apt-get update
@@ -110,7 +112,7 @@ docker network connect "kind" "\${reg_name}"
 # https://docs.tilt.dev/choosing_clusters.html#discovering-the-registry
 for node in \$(kind get nodes); do
   kubectl annotate node "\${node}" "kind.x-k8s.io/registry=\${reg_ip}:\${reg_port}";
-done' >> kind-create-cluster
+done' > kind-create-cluster
 
 chmod +x ./kind-create-cluster
 mv ./kind-create-cluster /usr/bin
