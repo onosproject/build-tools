@@ -105,6 +105,6 @@ cd ..
 chart_directory=${chart_repo_url#"https://"}
 chmod -R g+r ${staging_area}/
 ssh-keyscan -H aethercharts.onosproject.org >> ~/.ssh/known_hosts
-rsync -rvzh ${staging_area}/ travis@aethercharts.onosproject.org:/srv/sites/${chart_directory}
+rsync -rvzh ${staging_area}/ jenkins@aethercharts.onosproject.org:/srv/sites/${chart_directory}
 
 
