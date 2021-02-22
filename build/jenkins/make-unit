@@ -28,9 +28,17 @@ JENKINS_TEST_REPORT=report.xml
 JENKINS_COVERAGE_REPORT=coverage.xml
 
 result=0
-if ! go test -v -race "-coverprofile=${GO_COVERAGE_OUTPUT}" ${TEST_PACKAGES} >"${GO_TEST_OUTPUT}" 2>&1
+
+if [[ "$TEST_PACKAGES" != "NONE" ]]
 then
-  result=1
+  if ! go test -v -race "-coverprofile=${GO_COVERAGE_OUTPUT}" ${TEST_PACKAGES} >"${GO_TEST_OUTPUT}" 2>&1
+  then
+      result=1
+  fi
+else
+  touch go-coverage-output.out
+  touch go-test-output.out
+  result=0
 fi
 go-junit-report < "${GO_TEST_OUTPUT}" >"$JENKINS_TEST_REPORT"
 gocover-cobertura <"${GO_COVERAGE_OUTPUT}" >"${JENKINS_COVERAGE_REPORT}"

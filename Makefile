@@ -33,10 +33,9 @@ clean: # @HELP remove all the build artifacts
 	rm -rf ./web/onos-gui/dist
 
 jenkins-test: jenkins-tools test
+	TEST_PACKAGES="NONE" ./../build-tools/build/jenkins/make-unit
 
 test: images license_check linters
-	touch report.xml
-	touch coverage.xml
 
 jenkins-publish: build-tools jenkins-tools # @HELP Jenkins calls this to publish artifacts
 	./build/bin/push-images
