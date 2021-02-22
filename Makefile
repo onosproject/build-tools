@@ -8,6 +8,15 @@ all:
 license_check: # @HELP examine and ensure license headers exist
 	./licensing/boilerplate.py -v --rootdir=${CURDIR}/build
 
+linters: golang-ci # @HELP examines Go source code and reports coding problems
+	golangci-lint run --timeout 5m
+
+jenkins-tools: # @HELP installs tooling needed for Jenkins
+	cd .. && go get -u github.com/jstemmer/go-junit-report && go get github.com/t-yuki/gocover-cobertura
+
+golang-ci: # @HELP install golang-ci if not present
+	golangci-lint --version || curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b `go env GOPATH`/bin v1.36.0
+
 golang-build-docker: # @HELP build golang-build Docker image
 	docker build -t onosproject/golang-build:${ONOS_BUILD_VERSION} build/golang-build
 
@@ -22,6 +31,14 @@ images: protoc-go-docker golang-build-docker
 
 clean: # @HELP remove all the build artifacts
 	rm -rf ./web/onos-gui/dist
+
+jenkins-test: jenkins-tools test
+
+test: images license_check linters
+
+jenkins-publish: build-tools jenkins-tools # @HELP Jenkins calls this to publish artifacts
+	./build/bin/push-images
+	../build-tools/release-merge-commit
 
 help:
 	@grep -E '^.*: *# *@HELP' $(MAKEFILE_LIST) \

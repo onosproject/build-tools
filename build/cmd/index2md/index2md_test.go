@@ -21,7 +21,6 @@ import (
 	"strings"
 	"testing"
 	texttemplate "text/template"
-
 	//texttemplate "text/template"
 )
 
@@ -32,15 +31,16 @@ func Test_convertYaml(t *testing.T) {
 
 	tmplAppsListText, _ := texttemplate.New("yamlAppsTemplateMarkdown").Parse(yamlAppsTemplateMarkdown)
 	markdownBuffer := new(bytes.Buffer)
-	tmplAppsListText.Execute(markdownBuffer, index)
+	err = tmplAppsListText.Execute(markdownBuffer, index)
+	assert.NilError(t, err)
 	assert.Equal(t, 10538, len(markdownBuffer.String()))
 	assert.Assert(t, strings.HasPrefix(markdownBuffer.String(), "#ONOS Helm Chart Releases"))
 
-	tmplAppsListHtml, _ := htmltemplate.New("yamlAppsTemplateMarkdown").Parse(yamlAppsTemplateHtml)
+	tmplAppsListHTML, _ := htmltemplate.New("yamlAppsTemplateMarkdown").Parse(yamlAppsTemplateHTML)
 	xhtmlBuffer := new(bytes.Buffer)
-	tmplAppsListHtml.Execute(xhtmlBuffer, index)
+	err = tmplAppsListHTML.Execute(xhtmlBuffer, index)
+	assert.NilError(t, err)
 	assert.Equal(t, 13374, len(xhtmlBuffer.String()))
 	assert.Assert(t, strings.HasPrefix(xhtmlBuffer.String(), "<!DOCTYPE html"))
-
 
 }
