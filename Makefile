@@ -35,8 +35,8 @@ clean: # @HELP remove all the build artifacts
 jenkins-test: jenkins-tools test
 
 test: images license_check linters
-	touch go-coverage-output.out
-	touch go-test-output.out
+	touch report.xml
+	touch coverage.xml
 
 jenkins-publish: build-tools jenkins-tools # @HELP Jenkins calls this to publish artifacts
 	./build/bin/push-images
