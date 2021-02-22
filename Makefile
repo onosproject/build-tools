@@ -32,11 +32,14 @@ images: protoc-go-docker golang-build-docker
 clean: # @HELP remove all the build artifacts
 	rm -rf ./web/onos-gui/dist
 
+jenkins-test: # @HELP jenkins verify target
 jenkins-test: jenkins-tools test
 	TEST_PACKAGES="NONE" ./../build-tools/build/jenkins/make-unit
 
+test: # @HELP testing target
 test: images license_check linters
 
+jenkins-publish: # @HELP jenkins publishing target
 jenkins-publish: build-tools jenkins-tools # @HELP Jenkins calls this to publish artifacts
 	./build/bin/push-images
 	../build-tools/release-merge-commit
