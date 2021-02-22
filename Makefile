@@ -40,9 +40,9 @@ test: # @HELP testing target
 test: images license_check linters
 
 jenkins-publish: # @HELP jenkins publishing target
-jenkins-publish: build-tools jenkins-tools # @HELP Jenkins calls this to publish artifacts
+jenkins-publish: jenkins-tools # @HELP Jenkins calls this to publish artifacts
 	./build/bin/push-images
-	../build-tools/release-merge-commit
+	./release-merge-commit
 
 help:
 	@grep -E '^.*: *# *@HELP' $(MAKEFILE_LIST) \
