@@ -36,43 +36,45 @@ const yamlAppsTemplateMarkdown = "{{ printf \"#ONOS Helm Chart Releases\"}}\n\n"
 	"{{end}}\n" +
 	"{{end}}\n"
 
-const yamlAppsTemplateHtml = "" +
-"<!DOCTYPE html \n" +
-"PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \n" +
-"\"DTD/xhtml1-strict.dtd\">\n" +
-"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n" +
-"\t<head>\n" +
-"\t\t<title>ONOS helm Chart Releases</title>\n" +
-"\t</head>\n" +
-"\t<body>\n"+
-"\t\t<h1>{{ printf \"ONOS Helm Chart Releases\"}}</h1>\n" +
-"{{range $key, $value := .Entries }}" +
-"\t\t<h2>{{ printf \"%s\" $key }}</h2>\n" +
-"{{range $value}}" +
-"\t\t<div id=\"{{printf \"%s-%s\" $key .Version}}\">\n" +
-"\t\t\t<h3>Version{{printf \"%s\" .Version}}</h3>\n" +
-"\t\t\t<p>{{printf \"Generated %s\" .Created}}</p>\n" +
-"\t\t\t<p>App Version <b>{{printf \"%s\" .AppVersion}}</b></p>\n" +
-"{{range .Urls}}" +
-"\t\t\t<a href=\"{{printf \"%s\" .}}\">{{printf \"%s\" .}}</a>\n" +
-"{{end}}\n" +
-"\t\t</div>\n" +
-"{{end}}\n" +
-"{{end}}</body></html>"
+const yamlAppsTemplateHTML = "" +
+	"<!DOCTYPE html \n" +
+	"PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \n" +
+	"\"DTD/xhtml1-strict.dtd\">\n" +
+	"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n" +
+	"\t<head>\n" +
+	"\t\t<title>ONOS helm Chart Releases</title>\n" +
+	"\t</head>\n" +
+	"\t<body>\n" +
+	"\t\t<h1>{{ printf \"ONOS Helm Chart Releases\"}}</h1>\n" +
+	"{{range $key, $value := .Entries }}" +
+	"\t\t<h2>{{ printf \"%s\" $key }}</h2>\n" +
+	"{{range $value}}" +
+	"\t\t<div id=\"{{printf \"%s-%s\" $key .Version}}\">\n" +
+	"\t\t\t<h3>Version{{printf \"%s\" .Version}}</h3>\n" +
+	"\t\t\t<p>{{printf \"Generated %s\" .Created}}</p>\n" +
+	"\t\t\t<p>App Version <b>{{printf \"%s\" .AppVersion}}</b></p>\n" +
+	"{{range .Urls}}" +
+	"\t\t\t<a href=\"{{printf \"%s\" .}}\">{{printf \"%s\" .}}</a>\n" +
+	"{{end}}\n" +
+	"\t\t</div>\n" +
+	"{{end}}\n" +
+	"{{end}}</body></html>"
 
+// Chart :
 type Chart struct {
-	ApiVersion string `yaml:"apiVersion"`
-	AppVersion string `yaml:"appVersion"`
-	Version string `yaml:"version"`
-	Created string `yaml:"created"`
-	Description string `yaml:"description"`
-	Urls []string `yaml:"urls"`
+	APIVersion  string   `yaml:"apiVersion"`
+	AppVersion  string   `yaml:"appVersion"`
+	Version     string   `yaml:"version"`
+	Created     string   `yaml:"created"`
+	Description string   `yaml:"description"`
+	Urls        []string `yaml:"urls"`
 }
 
+// IndexYaml :
 type IndexYaml struct {
-	ApiVersion string `yaml:"apiVersion"`
+	APIVersion string             `yaml:"apiVersion"`
 	Entries    map[string][]Chart `yaml:"entries"`
-	Generated string `yaml:"generated"`
+	Generated  string             `yaml:"generated"`
 }
 
 /**
@@ -91,10 +93,15 @@ func main() {
 
 	if *htmlout {
 		tmplAppsList, _ := htmltemplate.New("yamlAppsTemplateMarkdown").Parse(yamlAppsTemplateMarkdown)
-		tmplAppsList.Execute(os.Stdout, indexYaml)
+		err = tmplAppsList.Execute(os.Stdout, indexYaml)
 	} else {
-		tmplAppsList, _ := texttemplate.New("yamlAppsTemplateHtml").Parse(yamlAppsTemplateHtml)
-		tmplAppsList.Execute(os.Stdout, indexYaml)
+		tmplAppsList, _ := texttemplate.New("yamlAppsTemplateHtml").Parse(yamlAppsTemplateHTML)
+		err = tmplAppsList.Execute(os.Stdout, indexYaml)
+	}
+
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to execute %v\n", err)
+		os.Exit(1)
 	}
 }
 
