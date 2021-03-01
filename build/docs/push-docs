@@ -31,6 +31,7 @@ make clean docs
 
 # go to the generated web site
 pushd docs/site
+ls -ltd .
 
 # set up the site directory as a git repo
 git init
