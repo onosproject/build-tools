@@ -29,9 +29,13 @@ cd onos-docs
 # capture the content and format it
 make clean docs
 
+# capture the generated web site in a staging area
+# this is needed to get around docker image permissions problems
+mkdir site-staging
+cp -R docs/site/* site-staging
+
 # go to the generated web site
-pushd docs/site
-ls -ltd .
+pushd site-staging
 
 # set up the site directory as a git repo
 git init
@@ -44,5 +48,4 @@ git commit -m "Docs published on `date` by `git config user.email`"
 git push --force "git@github.com:onosproject/onos-docs.git" master:gh-pages
 
 popd
-# rm -rf docs-temp
 
