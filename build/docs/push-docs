@@ -17,6 +17,8 @@
 
 set -eu -o pipefail
 
+BASEDIR=${BASEDIR:-MANUAL}
+
 # make a directory to hold the docs tree
 mkdir docs-temp
 pushd docs-temp
@@ -42,7 +44,7 @@ git init
 
 # commit the newly generated site
 git add .
-git commit -m "Docs published on `date` by `git config user.email`"
+git commit -m "Docs published on `date` by $BASEDIR"
 
 # push the generated site to the gh-pages branch of the docs repo
 git push --force "git@github.com:onosproject/onos-docs.git" master:gh-pages
