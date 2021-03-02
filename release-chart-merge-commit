@@ -54,8 +54,16 @@ for chart in ${modified_charts}; do
     if [ ! -z ${version} ]; then
         # figure out the tag for this chart
         component=`echo ${chart} | cut -d "/" -f1`
-        modified_component_charts="${modified_component_charts} ${component}"
-        tag="${component}-${version}"
+        nested_component=`echo ${chart} | cut -d "/" -f2`
+
+        if [ "$nested_component" == "Chart.yaml" ]
+        then
+          tag="${component}-${version}"
+          modified_component_charts="${modified_component_charts} ${component}"
+        else
+          tag="${component}-${nested_component}-${version}"
+          modified_component_charts="${modified_component_charts} ${component}/${nested_component}/"
+        fi
         echo $chart bumped to version $version for component $component new tag is $tag
 
         # Tag the tree
@@ -78,9 +86,9 @@ mkdir -p ${onos_helm_charts}
 for modified_component in ${modified_component_charts}; do
     helm dependency update ${modified_component}
     helm package ${modified_component}
-    component_dir=$(basename ${modified_component}*.tgz .tgz)
+    component_dir=$(echo ${modified_component} | cut -d "/" -f1)
     mkdir ${onos_helm_charts}/${component_dir}
-    mv ${modified_component}*.tgz ${onos_helm_charts}/${component_dir}/
+    mv *.tgz ${onos_helm_charts}/${component_dir}/
 done
 
 chart_index_url="${chart_repo_url}/index.yaml"
