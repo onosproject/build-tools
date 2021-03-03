@@ -44,7 +44,7 @@ helm repo add onos https://charts.onosproject.org
 helm repo add sdran --username ${WEBSITE_USER} --password ${WEBSITE_PASSWORD} https://sdrancharts.onosproject.org
 helm repo update
 
-modified_charts=$(git show HEAD | grep Chart.yaml | grep +++ | cut -d " " -f2 | sed s^b/^^) || true
+modified_charts=$(git show HEAD | grep Chart.yaml | grep -v /charts/ | grep +++ | cut -d " " -f2 | sed s^b/^^) || true
 
 staging_area="staging"
 modified_component_charts=""
