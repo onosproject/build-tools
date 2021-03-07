@@ -45,10 +45,6 @@ if [ "${dry_run}" == "0" ]; then
       echo "Upstream remote not setup with SSH push URL" >&2 && exit 1
 fi
 
-# Validate we are on master
-! git status -b | grep "On branch" | cut -d\  -f3 | grep -q master && \
-      echo "Not on master branch" >&2 && exit 1
-
 ! git status -b | grep -q "nothing to commit, working tree clean" && \
       echo "There are modified files" >&2 && git status && exit 1
 
