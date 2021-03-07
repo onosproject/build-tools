@@ -20,6 +20,7 @@
 set -eu -o pipefail
 
 project=${1:-onosproject}
+BASE_BRANCH=${BASE_BRANCH:-master}
 
 # Set up the git environment to allow making commits
 repo="${PWD##*/}".git
@@ -37,8 +38,8 @@ vers=(${VERSION//./ })
 # go likes 'v' to lead off a version string
 export VERSION=v${VERSION}
 
-# Travis leaves you in a detatched HEAD, return to master
-git checkout master
+# Travis leaves you in a detatched HEAD, return to base
+git checkout ${BASE_BRANCH}
 
 if ../build-tools/tag-collision-reject; then
   # Do a release build
@@ -60,6 +61,6 @@ if ../build-tools/tag-collision-reject; then
   # commit the new VERSION
   git add .
   git commit --author "ONOS CI <onos-builder@opennetworking.org>" -m "Bumping to new development version ${new_version}"
-  git push origin master
+  git push origin ${BASE_BRANCH}
 fi
 
