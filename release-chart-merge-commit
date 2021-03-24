@@ -49,7 +49,7 @@ modified_charts=$(git show HEAD | grep Chart.yaml | grep -v /charts/ | grep +++ 
 staging_area="staging"
 modified_component_charts=""
 for chart in ${modified_charts}; do
-    git diff HEAD^ HEAD ${chart}
+    git --no-pager diff HEAD^ HEAD ${chart}
     version=$(git diff HEAD^ HEAD ${chart} | grep +version: | cut -d " " -f2) || true
     if [ ! -z ${version} ]; then
         # figure out the tag for this chart
@@ -80,6 +80,7 @@ if [ "${modified_component_charts}" = "" ]; then
 fi
 
 # create the tgz files for the modified charts
+rm -rf "${staging_area}"
 onos_helm_charts_dir="onos-helm-charts"
 onos_helm_charts="${staging_area}/${onos_helm_charts_dir}"
 mkdir -p ${onos_helm_charts}
@@ -89,6 +90,7 @@ for modified_component in ${modified_component_charts}; do
     component_dir=$(echo ${modified_component} | cut -d "/" -f1)
     mkdir ${onos_helm_charts}/${component_dir}
     mv *.tgz ${onos_helm_charts}/${component_dir}/
+    ./patch-models ${component_dir} `pwd`/${modified_component}/Chart.yaml
 done
 
 chart_index_url="${chart_repo_url}/index.yaml"
