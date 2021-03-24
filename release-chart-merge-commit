@@ -90,7 +90,7 @@ for modified_component in ${modified_component_charts}; do
     component_dir=$(echo ${modified_component} | cut -d "/" -f1)
     mkdir ${onos_helm_charts}/${component_dir}
     mv *.tgz ${onos_helm_charts}/${component_dir}/
-    ../../build-tools/patch-models ${component_dir} `pwd`/${modified_component}/Chart.yaml
+    ../build-tools/patch-models ${component_dir} `pwd`/${modified_component}/Chart.yaml
 done
 
 chart_index_url="${chart_repo_url}/index.yaml"
