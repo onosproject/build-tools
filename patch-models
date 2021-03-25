@@ -26,10 +26,10 @@ chart_file=$2
 
 grep alias: "$chart_file" | grep -q config-model || exit 0
 
+top=`pwd`
 cd staging/onos-helm-charts/
 tgz_file=$(ls ${component_name}/*.tgz)
 tgz_file=${tgz_file##*/}
-echo $tgz_file
 tar xf ${component_name}/*.tgz
 rm ${component_name}/*.tgz
 cd ${component_name}
@@ -47,9 +47,7 @@ do
     dep=$(yq e .dependencies[$i] "$chart_file")
 
     attrs=(${dep//: / })
-    echo ${attrs[*]}
     attr_count=(${#attrs[@]})
-    echo $attr_count
 
     attr_count=$((attr_count / 2))
     attr_count=$((attr_count - 1))
@@ -75,14 +73,11 @@ do
 
     if [ "$alias" != "" ]
     then
-        url="$repository/onos-helm-charts/config-models/$name-$version.tgz"
-        echo $url
-        curl -sLo /tmp/x "$url"
+        chart_tgz="${top}/${component_name}/charts/$name-$version.tgz"
         dash_alias="${alias//./-}"
-        echo $dash_alias
         stage_dir="charts/$dash_alias"
         mkdir -p "$stage_dir"
-        pushd $stage_dir && tar xvf /tmp/x && mv $name/* $name/.helmignore . && rmdir "$name" && popd
+        pushd $stage_dir && tar xvf $chart_tgz && mv $name/* $name/.helmignore . && rmdir "$name" && popd
         rm -rf charts/$name
     fi
 done
