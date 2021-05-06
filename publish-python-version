@@ -60,7 +60,7 @@ do
 
     echo "Building python module in '$pymoddir'"
     # Create source distribution
-    python setup.py sdist
+    python3 setup.py sdist
 
     # Upload to PyPI
     echo "Uploading to PyPI"
