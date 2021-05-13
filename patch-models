@@ -76,7 +76,11 @@ do
         dash_alias="${alias//./-}"
         stage_dir="charts/$dash_alias"
         mkdir -p "$stage_dir"
-        pushd $stage_dir && tar xvf $chart_tgz && mv $name/* $name/.helmignore . && rmdir "$name" && popd
+        pushd $stage_dir
+        tar xvf $chart_tgz
+        mv $name/* $name/.* . || true
+        rmdir "$name"
+        popd
         rm -rf charts/$name
     fi
 done
