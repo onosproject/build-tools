@@ -71,8 +71,7 @@ do
         fi
     done
 
-    if [ "$alias" != "" ]
-    then
+    if [[ "$alias" == *"config-model"* ]]; then
         chart_tgz="${top}/${component_name}/charts/$name-$version.tgz"
         dash_alias="${alias//./-}"
         stage_dir="charts/$dash_alias"
