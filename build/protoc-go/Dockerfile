@@ -3,10 +3,10 @@ FROM golang:1.15
 RUN apt-get update && \
     apt-get install -y unzip python3 python3-pip
 
-RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.15.8/protoc-3.15.8-linux-x86_64.zip && \
-    unzip -o protoc-3.15.8-linux-x86_64.zip -d /usr/local bin/protoc && \
-    unzip -o protoc-3.15.8-linux-x86_64.zip -d /usr/local include/* && \
-    rm -rf protoc-3.15.8-linux-x86_64.zip
+RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.17.1/protoc-3.17.1-linux-x86_64.zip && \
+    unzip -o protoc-3.17.1-linux-x86_64.zip -d /usr/local bin/protoc && \
+    unzip -o protoc-3.17.1-linux-x86_64.zip -d /usr/local include/* && \
+    rm -rf protoc-3.17.1-linux-x86_64.zip
 
 RUN go get -u google.golang.org/protobuf/cmd/protoc-gen-go && \
     go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc && \
@@ -19,7 +19,8 @@ RUN go get -u google.golang.org/protobuf/cmd/protoc-gen-go && \
     go get -u github.com/gogo/protobuf/protoc-gen-gogoslick && \
     go get -u github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc && \
     go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway && \
-    go get -u github.com/envoyproxy/protoc-gen-validate
+    go get -u github.com/envoyproxy/protoc-gen-validate && \
+    go get -u github.com/favadi/protoc-go-inject-tag
 
 RUN mkdir -p /go/src/github.com/google /go/src/github.com/p4lang && \
     git clone --branch master https://github.com/google/protobuf /go/src/github.com/google/protobuf && \
