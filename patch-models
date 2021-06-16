@@ -24,7 +24,11 @@ fi
 component_name=$1
 chart_file=$2
 
-grep alias: "$chart_file" | grep -q config-model || exit 0
+declare -a aliasCharts=("config-model" "aether-roc-gui" "sdcore-adapter")
+
+pattern=$(printf "|%s" "${aliasCharts[@]}")
+pattern=${pattern:1}
+grep alias: "$chart_file" | grep -qE $pattern || exit 0
 
 top=`pwd`
 cd staging/onos-helm-charts/
@@ -71,7 +75,13 @@ do
         fi
     done
 
-    if [[ "$alias" == *"config-model"* ]]; then
+    found_one="0"
+    for a in ${aliasCharts[@]}; do
+        if [[ "$alias" == *"$a"* ]]; then
+            found_one="1"
+        fi
+    done
+    if [ $found_one == "1" ] ; then
         chart_tgz="${top}/${component_name}/charts/$name-$version.tgz"
         dash_alias="${alias//./-}"
         stage_dir="charts/$dash_alias"
