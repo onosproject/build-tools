@@ -1,6 +1,6 @@
 module github.com/onosproject/onos-helm-charts
 
-go 1.14
+go 1.16
 
 require (
 	github.com/google/go-cmp v0.4.0 // indirect
