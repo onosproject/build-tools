@@ -26,6 +26,7 @@ export VERSIONFILE
 
 # Set up the git environment to allow making commits
 repo="${PWD##*/}".git
+git remote remove upstream
 git remote add upstream https://github.com/${project}/${repo}
 git remote set-url origin git@github.com:${project}/${repo}
 git remote set-url --push upstream git@github.com:${project}/${repo}
