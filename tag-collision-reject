@@ -20,7 +20,7 @@
 
 set -eu -o pipefail
 
-VERSIONFILE="" # file path to file containing version number
+VERSIONFILE=${VERSIONFILE:-VERSION} # file path to file containing version number
 NEW_VERSION="" # version number found in $VERSIONFILE
 TAG_VERSION="" # version file that might have a leading v to work around go mod funkyness
 
@@ -35,10 +35,9 @@ WORKSPACE=${WORKSPACE:-.}
 # find the version string in the repo, read into NEW_VERSION
 # Add additional places NEW_VERSION could be found to this function
 function read_version {
-  if [ -f "VERSION" ]
+  if [ -f "$VERSIONFILE" ]
   then
-    NEW_VERSION=$(head -n1 "VERSION")
-    VERSIONFILE="VERSION"
+    NEW_VERSION=$(head -n1 "$VERSIONFILE")
 
     # If this is a golang project, use funky v-prefixed versions
     if [ -f "Gopkg.toml" ] || [ -f "go.mod" ]

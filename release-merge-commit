@@ -21,6 +21,8 @@ set -eu -o pipefail
 
 project=${1:-onosproject}
 BASE_BRANCH=${BASE_BRANCH:-master}
+VERSIONFILE=${VERSIONFILE:-VERSION}
+export VERSIONFILE
 
 # Set up the git environment to allow making commits
 repo="${PWD##*/}".git
@@ -32,7 +34,7 @@ export SEMVER_STRICT=1
 export DRY_RUN=0
 
 # Read in the desired version
-export VERSION=$(< ./VERSION)
+export VERSION=$(< ./$VERSIONFILE)
 vers=(${VERSION//./ })
 
 # go likes 'v' to lead off a version string
