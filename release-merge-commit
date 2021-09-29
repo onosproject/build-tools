@@ -59,7 +59,7 @@ if ../build-tools/tag-collision-reject; then
 
   # Update the VERSION file to the next dev version
   new_version=${vers[0]}.${vers[1]}.`expr ${vers[2]} + 1`-dev
-  echo ${new_version} >./VERSION
+  echo ${new_version} >./$VERSIONFILE
 
   # commit the new VERSION
   git add .
