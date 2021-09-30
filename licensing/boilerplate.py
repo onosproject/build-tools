@@ -72,6 +72,10 @@ def get_refs():
         ref_file.close()
         refs[extension] = ref
 
+    if len(refs) == 0:
+        print("No boilerplate files found")
+        sys.exit(1)
+
     return refs
 
 def is_generated_file(filename, data, regexs):
@@ -208,6 +212,11 @@ def get_files(extensions):
         extension = file_extension(pathname)
         if extension in extensions or basename in extensions:
             outfiles.append(pathname)
+
+    if len(outfiles) == 0:
+        print("No files found to check")
+        sys.exit(1)
+
     return outfiles
 
 def get_dates():
