@@ -23,6 +23,8 @@ project=${1:-onosproject}
 BASE_BRANCH=${BASE_BRANCH:-master}
 VERSIONFILE=${VERSIONFILE:-VERSION}
 export VERSIONFILE
+MAKEFILE=${MAKEFILE:-"Makefile"}
+export MAKEFILE
 
 # Set up the git environment to allow making commits
 repo="${PWD##*/}".git
@@ -55,7 +57,7 @@ if ../build-tools/tag-collision-reject; then
   git clean -fx
 
   # publish artifacts
-  make publish
+  make -f $MAKEFILE publish
 
   # Update the VERSION file to the next dev version
   new_version=${vers[0]}.${vers[1]}.`expr ${vers[2]} + 1`-dev
