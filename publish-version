@@ -33,6 +33,7 @@ set -e -u -o pipefail
 
 dry_run=${DRY_RUN:-"0"}
 version="${1}"
+MAKEFILE=${MAKEFILE:-"Makefile"}
 shift 1
 
 # Validate args...
@@ -58,7 +59,7 @@ if [ $# -gt 0 ]; then
   fi
 
   # 1) Make images
-  make images || exit 1
+  make -f $MAKEFILE images || exit 1
 
   # 1a) Validate that each docker image exists
   for image in "$@"; do
@@ -66,7 +67,7 @@ if [ $# -gt 0 ]; then
     [ -z "$id" ] && echo "Docker image $image:latest does not exist!" && exit 1
   done
 else
-  make || exit 1
+  make -f $MAKEFILE || exit 1
 fi
 
 # 2) Push the specified version tag to upstream (or origin) repo
