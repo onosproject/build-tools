@@ -17,17 +17,18 @@
 set -e -u -o pipefail
 
 declare -a components=(
-  "sdran-helm-charts" "sd-ran-1.1.4"
-  "onos-e2-sm" "servicemodels/e2sm_kpm/v0.7.19"
-  "onos-e2-sm" "servicemodels/e2sm_kpm_v2/v0.7.19"
-  "onos-e2-sm" "servicemodels/e2sm_rc_pre/v0.7.19"
-  "onos-e2-sm" "servicemodels/e2sm_mho/v0.7.19"
-  "onos-e2-sm" "servicemodels/e2sm_ni/v0.7.19"
-  "onos-e2sub" "v0.7.3"
-  "onos-e2t" "v0.7.15"
-  "ran-simulator" "v0.7.26"
-  "onos-kpimon" "v0.1.8"
-  "onos-pci" "v0.1.3"
+  "sdran-helm-charts" "sd-ran-1.2.1"
+  "onos-e2-sm" "servicemodels/e2sm_kpm/v0.7.53"
+  "onos-e2-sm" "servicemodels/e2sm_kpm_v2/v0.7.53"
+  "onos-e2-sm" "servicemodels/e2sm_rc_pre/v0.7.53"
+  "onos-e2-sm" "servicemodels/e2sm_mho/v0.7.53"
+  "onos-e2-sm" "servicemodels/e2sm_ni/v0.7.53"
+  "onos-e2t" "v0.8.1"
+  "ran-simulator" "v0.7.56"
+  "onos-kpimon" "v0.1.26"
+  "onos-pci" "v0.1.19"
+  "onos-uenib" "v0.1.0"
+  "onos-mlb" "v0.0.7"
 )
 
 length=${#components[@]}
@@ -47,14 +48,14 @@ for i in $(seq 0 2 $length); do
   then
     git clone git@github.com:onosproject/$component.git
     cd $component
-    git checkout -b rel-1.1.1 $version
+    git checkout -b rel-1.2.0 $version
 
-    curl -X POST -u$GIT_USER:$GIT_TOKEN https://api.github.com/orgs/sdran/repos -d "{\"name\":\"$component\",\"private\":\"true\"}"
+    #curl -X POST -u$GIT_USER:$GIT_TOKEN https://api.github.com/orgs/sdran/repos -d "{\"name\":\"$component\",\"private\":\"true\"}"
 
     /Users/ray/go/src/github.com/onosproject/build-tools/dev/release-open-source/fix-sdran-opensource
 
     git add .
-    git commit -m "Updates for open source release"
+    git commit -m "Updates for open source release 1.2.0"
     git push https://github.com/sdran/$component.git
 
     /Users/ray/go/src/github.com/onosproject/build-tools/dev/release-open-source/remove-proprietary-sdran-opensource
