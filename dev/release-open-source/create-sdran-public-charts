@@ -21,15 +21,14 @@ WEBSITE_PASSWORD=$2
 UPLOAD_USER=$3
 
 declare -a charts=(
-  "sd-ran/sd-ran-1.1.4.tgz"
-  "onos-e2sub/onos-e2sub-1.0.2.tgz"
-  "onos-e2t/onos-e2t-1.0.16.tgz"
-  "ran-simulator/ran-simulator-1.0.38.tgz"
-  "onos-kpimon/onos-kpimon-0.6.5.tgz"
-  "onos-pci/onos-pci-0.6.4.tgz"
-  "fb-ah-gui/fb-ah-gui-0.0.1.tgz"
-  "fb-ah-xapp/fb-ah-xapp-0.0.1.tgz"
-  "ah-eson-test-server/ah-eson-test-server-0.0.1.tgz"
+  "sd-ran/sd-ran-1.2.1.tgz"
+  "onos-e2t/onos-e2t-1.0.47.tgz"
+  "ran-simulator/ran-simulator-1.0.74.tgz"
+  "onos-kpimon/onos-kpimon-0.6.19.tgz"
+  "onos-pci/onos-pci-0.6.18.tgz"
+  "fb-ah-gui/fb-ah-gui-0.0.4.tgz"
+  "fb-ah-xapp/fb-ah-xapp-0.0.5.tgz"
+  "ah-eson-test-server/ah-eson-test-server-0.0.2.tgz"
 )
 
 source_base_url="https://sdrancharts.onosproject.org/onos-helm-charts/"
@@ -37,6 +36,9 @@ source_base_url="https://sdrancharts.onosproject.org/onos-helm-charts/"
 rm -rf staging
 mkdir -p staging/onos-helm-charts
 cd staging
+
+# get the existing charts
+scp -r $UPLOAD_USER@static.opennetworking.org:/srv/sites/publicsdrancharts.onosproject.org/onos-helm-charts/ .
 
 for chart in "${charts[@]}" ; do
   curl -u ${WEBSITE_USER}:${WEBSITE_PASSWORD} -L --silent --create-dirs -o onos-helm-charts/$chart $source_base_url/$chart
