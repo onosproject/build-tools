@@ -1,3 +1,6 @@
+DOCKER_REPOSITORY ?= onosproject/
+KIND_CLUSTER_NAME ?= kind
+
 deps: # @HELP ensure that the required dependencies are in place
 	go build -v ./...
 	bash -c "diff -u <(echo -n) <(git diff go.mod)"
@@ -13,7 +16,7 @@ jenkins-tools: # @HELP installs tooling needed for Jenkins
 	cd .. && go get -u github.com/jstemmer/go-junit-report && go get github.com/t-yuki/gocover-cobertura
 
 golang-ci: # @HELP install golang-ci if not present
-	golangci-lint --version || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.42.1
+	golangci-lint --version || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b `go env GOPATH`/bin v1.42.1
 
 license_check: # @HELP examine and ensure license headers exist
 	@if [ ! -d "../build-tools" ]; then cd .. && git clone https://github.com/onosproject/build-tools.git; fi
@@ -21,6 +24,9 @@ license_check: # @HELP examine and ensure license headers exist
 
 bumponosdeps: # @HELP update "onosproject" go dependencies and push patch to git.
 	./../build-tools/bump-onos-deps ${VERSION}
+
+clean-build-tools: # @HELP cleans the downloaded build tools directory
+	rm -rf ./build/build-tools
 
 help:
 	@grep -E '^.*: *# *@HELP' $(MAKEFILE_LIST) \
