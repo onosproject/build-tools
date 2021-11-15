@@ -7,7 +7,7 @@ deps: # @HELP ensure that the required dependencies are in place
 	bash -c "diff -u <(echo -n) <(git diff go.sum)"
 
 linters: golang-ci # @HELP examines Go source code and reports coding problems
-	golangci-lint run --timeout 5m
+	golangci-lint run --timeout 15m
 
 gofmt: # @HELP run the Go format validation
 	bash -c "diff -u <(echo -n) <(gofmt -d pkg/ cmd/ tests/)"
