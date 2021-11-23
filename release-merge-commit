@@ -26,6 +26,8 @@ export VERSIONFILE
 MAKEFILE=${MAKEFILE:-"Makefile"}
 export MAKEFILE
 
+if [ ! -d "../build-tools" ]; then wd=${PWD} && cd .. && git clone https://github.com/onosproject/build-tools.git && cd $wd; fi
+
 # Set up the git environment to allow making commits
 repo="${PWD##*/}".git
 git remote remove upstream || true
