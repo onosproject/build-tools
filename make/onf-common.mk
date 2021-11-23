@@ -25,7 +25,7 @@ license_check: # @HELP examine and ensure license headers exist
 bumponosdeps: # @HELP update "onosproject" go dependencies and push patch to git.
 	./../build-tools/bump-onos-deps ${VERSION}
 
-clean-build-tools: # @HELP cleans the downloaded build tools directory
+clean:: # @HELP cleans the downloaded build tools directory
 	rm -rf ./build/build-tools
 
 help:
