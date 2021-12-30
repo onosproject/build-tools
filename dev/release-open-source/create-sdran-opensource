@@ -29,13 +29,16 @@ declare -a components=(
   "onos-pci" "v0.1.19"
   "onos-uenib" "v0.1.0"
   "onos-mlb" "v0.0.7"
+  "onos-exporter" "v0.1.7"
 )
 
 length=${#components[@]}
 length=$((length - 1))
 
-GIT_USER=$1
-GIT_TOKEN=$2
+#GIT_USER=$1
+#GIT_TOKEN=$2
+
+build_tools=$PWD
 
 rm -rf sdran-upload
 mkdir sdran-upload
@@ -52,13 +55,13 @@ for i in $(seq 0 2 $length); do
 
     #curl -X POST -u$GIT_USER:$GIT_TOKEN https://api.github.com/orgs/sdran/repos -d "{\"name\":\"$component\",\"private\":\"true\"}"
 
-    /Users/ray/go/src/github.com/onosproject/build-tools/dev/release-open-source/fix-sdran-opensource
+    $build_tools/dev/release-open-source/fix-sdran-opensource
 
     git add .
     git commit -m "Updates for open source release 1.2.0"
     git push https://github.com/sdran/$component.git
 
-    /Users/ray/go/src/github.com/onosproject/build-tools/dev/release-open-source/remove-proprietary-sdran-opensource
+    $build_tools/dev/release-open-source/remove-proprietary-sdran-opensource
 
     cd ..
   fi
