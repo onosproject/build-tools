@@ -26,7 +26,7 @@ RUN mkdir -p /go/src/github.com/google /go/src/github.com/p4lang && \
     git clone --branch master https://github.com/google/protobuf /go/src/github.com/google/protobuf && \
     git clone --branch master https://github.com/openconfig/gnmi /go/src/github.com/openconfig/gnmi && \
     git clone --branch main https://github.com/p4lang/p4runtime /go/src/github.com/p4lang/p4runtime && \
-    git clone --branch master https://github.com/googleapis/api-common-protos /go/src/github.com/googleapis/api-common-protos && \
+    git clone --branch main https://github.com/googleapis/api-common-protos /go/src/github.com/googleapis/api-common-protos && \
     mkdir -p /go/src/github.com/ &&\
     wget "https://github.com/grpc/grpc-web/releases/download/1.2.1/protoc-gen-grpc-web-1.2.1-linux-x86_64" --quiet && \
     mv protoc-gen-grpc-web-1.2.1-linux-x86_64 /usr/local/bin/protoc-gen-grpc-web && \
