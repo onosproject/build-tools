@@ -1,6 +1,14 @@
 DOCKER_REPOSITORY ?= onosproject/
 KIND_CLUSTER_NAME ?= kind
 
+help:
+	@grep -E '^.*: *# *@HELP' $(MAKEFILE_LIST) \
+    | sort \
+    | awk ' \
+        BEGIN {FS = ": *# *@HELP"}; \
+        {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}; \
+    '
+
 deps: # @HELP ensure that the required dependencies are in place
 	go build -v ./...
 	bash -c "diff -u <(echo -n) <(git diff go.mod)"
@@ -32,11 +40,3 @@ integration-test-namespace:
 
 clean:: # @HELP cleans the downloaded build tools directory
 	rm -rf ./build/build-tools
-
-help:
-	@grep -E '^.*: *# *@HELP' $(MAKEFILE_LIST) \
-    | sort \
-    | awk ' \
-        BEGIN {FS = ": *# *@HELP"}; \
-        {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}; \
-    '
