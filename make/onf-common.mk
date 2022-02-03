@@ -32,7 +32,7 @@ license_check: # @HELP examine and ensure license headers exist
 license_check_member_only: # @HELP examine and ensure license headers exist for member only license
 	./build/build-tools/licensing/boilerplate.py -v --skipped-dir build --rootdir=${CURDIR} --boilerplate LicenseRef-ONF-Member-Only-1.0
 
-license_check_apache: # @HELP examine and ensure license headers exist for member only license
+license_check_apache: # @HELP examine and ensure license headers exist for the Apache 2.0 license
 	./build/build-tools/licensing/boilerplate.py -v --skipped-dir build --rootdir=${CURDIR} --boilerplate SPDX-Apache-2.0
 
 bumponosdeps: # @HELP update "onosproject" go dependencies and push patch to git.
