@@ -26,6 +26,12 @@ jenkins-tools: # @HELP installs tooling needed for Jenkins
 golang-ci: # @HELP install golang-ci if not present
 	golangci-lint --version || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b `go env GOPATH`/bin v1.42.1
 
+reuse-tool: # @HELP install reuse if not present
+	command -v reuse || pip install reuse
+
+reuse-lint: reuse-tool # @HELP run reuse lint
+	reuse lint
+
 license_check: # @HELP examine and ensure license headers exist
 	./build/build-tools/licensing/boilerplate.py -v --skipped-dir build --rootdir=${CURDIR}
 
