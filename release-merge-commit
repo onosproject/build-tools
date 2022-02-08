@@ -60,7 +60,7 @@ if ../build-tools/tag-collision-reject; then
   git clean -fx
 
   # publish artifacts
-  make -c $MAKEFILE_ROOT -f $MAKEFILE publish
+  make -C $MAKEFILE_ROOT -f $MAKEFILE publish
 
   # Update the VERSION file to the next dev version
   new_version=${vers[0]}.${vers[1]}.`expr ${vers[2]} + 1`-dev
