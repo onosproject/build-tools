@@ -24,6 +24,7 @@ BASE_BRANCH=${BASE_BRANCH:-master}
 VERSIONFILE=${VERSIONFILE:-VERSION}
 export VERSIONFILE
 MAKEFILE=${MAKEFILE:-"Makefile"}
+MAKEFILE_ROOT=${MAKEFILE_ROOT:-"."}
 export MAKEFILE
 
 if [ ! -d "../build-tools" ]; then wd=${PWD} && cd .. && git clone https://github.com/onosproject/build-tools.git && cd $wd; fi
@@ -59,7 +60,7 @@ if ../build-tools/tag-collision-reject; then
   git clean -fx
 
   # publish artifacts
-  make -f $MAKEFILE publish
+  make -c $MAKEFILE_ROOT -f $MAKEFILE publish
 
   # Update the VERSION file to the next dev version
   new_version=${vers[0]}.${vers[1]}.`expr ${vers[2]} + 1`-dev
@@ -70,4 +71,3 @@ if ../build-tools/tag-collision-reject; then
   git commit --author "ONOS CI <onos-builder@opennetworking.org>" -m "Bumping to new development version ${new_version}"
   git push origin ${BASE_BRANCH}
 fi
-
