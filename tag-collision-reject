@@ -40,7 +40,6 @@ function read_version {
     # this means the script is used to check a custom version,
     # do not read in any files but always check against git tags
     releaseversion=1
-    fail_validation=1
     TAG_VERSION=${NEW_VERSION}
   elif [ -f "$VERSIONFILE" ]
   then
