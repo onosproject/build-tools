@@ -21,50 +21,11 @@ alias gp='git fetch upstream && git rebase upstream/master'
 # Review... meaning push the current branch to origin
 alias gr='git push origin $(git symbolic-ref HEAD)'
 
+# Review (force)... meaning push the current branch to origin
+alias grf='git push -f origin $(git symbolic-ref HEAD)'
+
 # Where am I
 alias gs='git status -b'
-
-# Inject shell auto-completion for the 'onos' command
-alias ocomp='eval "$(onos completion bash)"'
-
-# kubectl cluster-info... meaning show which cluster this terminal is pointing at
-alias ki='kubectl cluster-info'
-
-# kubectl in the micro-onos namespace - add on additional args as necessary
-alias km='kubectl -n micro-onos'
-
-# helm in the micro-onos namespace - add on additional args as necessary
-alias hm='helm -n micro-onos'
-
-# cli shortcut
-alias ocli='kubectl -n micro-onos exec -it $(kubectl -n micro-onos get pods -l type=cli -o name) -- /bin/sh'
-
-# onit shortcuts
-alias okctl='kubectl -n $(onit get cluster)'
-
-function kmp {
-    km get pods
-}
-
-function wkmp {
-    watch kubectl -n micro-onos get pods
-}
-
-function okpid {
-    okctl get pods | cut -d\  -f 1 | grep -v envoy | grep $1 2>/dev/null
-}
-
-function oklog {
-    n=$(okpid $1)
-    [ -n "$n" ] && kubectl logs -n $(onit get cluster) --follow $n
-}
-
-function oklogw {
-    while true; do
-        oklog $1
-        sleep 5
-    done
-}
 
 # Lists go packages in the current project; suitable for https://go-search.org/add
 function goPackages {
@@ -78,7 +39,7 @@ function godocPackages {
         | bash
 }
 
-export ONOS_REPOS="onos-lib-go onos-api onos-topo onos-config onos-e2t onos-e2sub onos-ric-sdk-go onos-cli onos-test onos-helm-charts"
+export ONOS_REPOS="onos-lib-go onos-api onos-topo onos-config onos-cli onos-test onos-helm-charts"
 
 # Pull All Repos
 function par {
