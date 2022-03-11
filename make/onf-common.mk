@@ -29,7 +29,7 @@ golang-ci: # @HELP install golang-ci if not present
 reuse-tool: # @HELP install reuse if not present
 	command -v reuse || pip install reuse
 
-reuse-lint: reuse-tool # @HELP run reuse lint
+license: reuse-tool # @HELP run license checks
 	reuse lint
 
 license_check: # @HELP examine and ensure license headers exist
