@@ -30,6 +30,8 @@ fi
 WEBSITE_USER=$2
 WEBSITE_PASSWORD=$3
 
+if [ ! -d "../build-tools" ]; then wd=${PWD} && cd .. && git clone https://github.com/onosproject/build-tools.git && cd $wd; fi
+
 # Set up the git environment to allow making commits
 repo="${PWD##*/}".git
 
