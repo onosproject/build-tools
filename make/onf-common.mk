@@ -27,7 +27,7 @@ golang-ci: # @HELP install golang-ci if not present
 	golangci-lint --version || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b `go env GOPATH`/bin v1.42.1
 
 reuse-tool: # @HELP install reuse if not present
-	command -v reuse || pip install reuse
+	command -v reuse || python3 -m pip install reuse
 
 license: reuse-tool # @HELP run license checks
 	reuse lint
