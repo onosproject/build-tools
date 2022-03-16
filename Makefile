@@ -1,12 +1,16 @@
-.PHONY: build
+# SPDX-FileCopyrightText: 2020-present Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+.PHONY: build license
 
 ONOS_BUILD_VERSION := latest
 
 all:
 	cat README.md
 
-license_check: # @HELP examine and ensure license headers exist
-	./licensing/boilerplate.py -v --rootdir=${CURDIR}/build
+license:  # @HELP validate license headers
+	reuse lint
 
 linters: golang-ci # @HELP examines Go source code and reports coding problems
 	golangci-lint run --timeout 5m
@@ -37,7 +41,7 @@ jenkins-test: jenkins-tools test
 	TEST_PACKAGES="NONE" ./../build-tools/build/jenkins/make-unit
 
 test: # @HELP testing target
-test: images license_check linters
+test: images linters license
 
 jenkins-publish: # @HELP jenkins publishing target
 jenkins-publish: jenkins-tools # @HELP Jenkins calls this to publish artifacts

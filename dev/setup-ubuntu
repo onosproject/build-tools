@@ -1,4 +1,7 @@
 #!/usr/bin/env bash 
+# SPDX-FileCopyrightText: 2020-present Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: Apache-2.0
 
 # The IP address of the dev machine
 ip=$1

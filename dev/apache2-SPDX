@@ -3,7 +3,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-
 set -e -u -o pipefail
 
 
@@ -12,9 +11,9 @@ file=$1
 sed -i".VERBACK" -e 1,13d $file
 rm -f $file.VERBACK
 
-echo "// SPDX-FileCopyrightText: 2020-present Open Networking Foundation <info@opennetworking.org>" >>$file.VERBACK
+echo "// SP""DX-FileCopyrightText: 2020-present Open Networking Foundation <info@opennetworking.org>" >>$file.VERBACK
 echo "//">>$file.VERBACK
-echo "// SPDX-License-Identifier: Apache-2.0">>$file.VERBACK
+echo "// SP""DX-License-Identifier: Apache-2.0">>$file.VERBACK
 
 cat $file >>$file.VERBACK
 

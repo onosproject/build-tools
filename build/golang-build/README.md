@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2020-present Open Networking Foundation <info@opennetworking.org>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Developer Docker Container
 The purpose of this docker container is to provide a minimal environment for building and
 validating the project. As such this container can be used as part of the Travis CI.
