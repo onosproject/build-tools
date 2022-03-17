@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2020-present Open Networking Foundation <info@opennetworking.org>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Protoc Go Docker Container
 The purpose of this docker container is to allow running the protobuf compiler in an 
 isolated environment to free the developers from having to install protoc themselves.
