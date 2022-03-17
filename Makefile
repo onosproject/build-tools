@@ -28,7 +28,7 @@ clean:: # @HELP remove all the build artifacts
 
 jenkins-test: # @HELP jenkins verify target
 jenkins-test: jenkins-tools test
-	TEST_PACKAGES="NONE" ./jenkins/make-unit
+	TEST_PACKAGES="NONE" ./build/jenkins/make-unit
 
 test: # @HELP testing target
 test: images linters license
