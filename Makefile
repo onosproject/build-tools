@@ -34,6 +34,6 @@ test: # @HELP testing target
 test: images linters license
 
 jenkins-publish: # @HELP jenkins publishing target
-jenkins-publish: jenkins-tools # @HELP Jenkins calls this to publish artifacts
+jenkins-publish: # @HELP Jenkins calls this to publish artifacts
 	./build/bin/push-images
 	./release-merge-commit
