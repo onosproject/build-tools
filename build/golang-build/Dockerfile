@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM golang:1.16
+FROM golang:1.17.8
 
 COPY dep-*.sha256 .
 
