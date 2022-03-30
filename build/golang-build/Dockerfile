@@ -14,7 +14,7 @@ RUN mkdir release && \
     chmod +x /go/bin/dep && \
     rm dep-*.sha256 && \
     mkdir -p /go/src/github.com/protocolbuffers && \
-    git clone --branch master https://github.com/protocolbuffers/protobuf /go/src/github.com/protocolbuffers/protobuf
+    git clone --branch main https://github.com/protocolbuffers/protobuf /go/src/github.com/protocolbuffers/protobuf
 
 RUN export GO111MODULE=on && \
     go get -u github.com/golang/protobuf/protoc-gen-go && \
