@@ -78,7 +78,7 @@ build: $(BIN) ; $(info $(M) building executable...) @ ## Common build program bi
 		-o $(BIN)/$(basename $(MODULE)) main.go
 
 .PHONY: all
-all: license_check fmt lint test build ; $(info $(M) building all...) @ ## Common checks, format and build binary
+all: license fmt lint test build ; $(info $(M) building all...) @ ## Common checks, format and build binary
 
 .PHONY: docker-$(PRJ_NAME)
 docker-$(PRJ_NAME): ; $(info $(M) building docker image...) @ ## Common build docker image
@@ -131,10 +131,6 @@ fmt: ; $(info $(M) running gofmt...) @ ## Common run gofmt on all source files
 tidy: test ; $(info $(M) modules tidy...) @ ## Common run test before and after go mod tidy
 	$Q $(GO) mod tidy
 	make test
-
-.PHONY: license_check
-license_check: ; $(info $(M) running license check...) @ ## Common examine and ensure license headers exist
-	$Q $(BUILD)/build-tools/licensing/boilerplate.py -v --rootdir=$(CURDIR) --skipped-dir=build
 
 # Misc
 
