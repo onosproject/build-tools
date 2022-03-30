@@ -21,10 +21,10 @@ gofmt: # @HELP run the Go format validation
 	bash -c "diff -u <(echo -n) <(gofmt -d pkg/ cmd/ tests/)"
 
 jenkins-tools: # @HELP installs tooling needed for Jenkins
-	cd .. && go get -u github.com/jstemmer/go-junit-report && go get github.com/t-yuki/gocover-cobertura
+	cd .. && go install github.com/jstemmer/go-junit-report@v1.0.0 && go install github.com/t-yuki/gocover-cobertura@master
 
 golang-ci: # @HELP install golang-ci if not present
-	golangci-lint --version || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b `go env GOPATH`/bin v1.42.1
+	golangci-lint --version || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b `go env GOPATH`/bin v1.45.2
 
 reuse-tool: # @HELP install reuse if not present
 	command -v reuse || python3 -m pip install --user reuse
