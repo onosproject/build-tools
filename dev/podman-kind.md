@@ -84,4 +84,7 @@ cd build-tools/dev
 ln -s /usr/local/bin/podman /usr/local/bin/docker
 ```
 
-Note that after following these steps, you may need to start a separate shell.
+Note that after following these steps, you may need to start a separate terminal shell and/or you
+may need to stop and restart the `podman` machine.
+
+Best of luck... ;)
