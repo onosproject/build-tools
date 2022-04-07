@@ -14,7 +14,7 @@ brew install podman
 ```
 Once done, init and start the machine:
 ```
-podman machine init
+podman machine init --volume $HOME:$HOME
 podman machine start
 ```
 
@@ -47,6 +47,11 @@ While still logged in to the podman machine run the following commands:
 ```
 curl -O https://kojipkgs.fedoraproject.org/packages/podman/4.0.2/1.fc35/x86_64/podman-4.0.2-1.fc35.x86_64.rpm
 sudo -i
+```
+
+Patch the IPv6 tables...
+
+```
 rpm-ostree override replace /home/core/podman-4.0.2-1.fc35.x86_64.rpm
 echo ip6_tables > /etc/modules-load.d/ip6_tables.conf
 systemctl reboot
