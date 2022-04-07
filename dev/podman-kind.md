@@ -18,6 +18,11 @@ podman machine init --volume $HOME:$HOME
 podman machine start
 ```
 
+## Install system helper service
+```
+sudo /usr/local/Cellar/podman/4.0.3/bin/podman-mac-helper install
+podman machine stop; podman machine start
+```
 ## Patch podman.service on the VM
 At this point some changes have to be made to the podman machine to allow it
 to operate with kind in rootless mode:
@@ -37,7 +42,7 @@ Add `Delegate=true` line under `[Service]` section:
 ```
 ...
 [Service]
-Delegate=yes
+Delegate=true
 ...
 ```
 
