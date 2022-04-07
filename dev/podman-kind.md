@@ -73,3 +73,10 @@ export KIND_EXPERIMENTAL_PROVIDER=podman
 cd build-tools/dev
 ./setup-cluster
 ```
+
+## Setup a symlink for docker
+```
+ln -s /usr/local/bin/podman /usr/local/bin/docker
+```
+
+Note that after following these steps, you may need to start a separate shell.
