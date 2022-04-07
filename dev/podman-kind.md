@@ -67,9 +67,9 @@ echo ip6_tables > /etc/modules-load.d/ip6_tables.conf
 systemctl reboot
 ```
 
-## Install kind kubectl and helm
+## Install docker, kind, kubectl and helm
 ```
-brew install kind kubectl helm
+brew install docker kind kubectl helm
 ```
 
 ## Setup µONOS Cluster
@@ -79,12 +79,7 @@ cd build-tools/dev
 ./setup-cluster
 ```
 
-## Setup a symlink for docker
-```
-ln -s /usr/local/bin/podman /usr/local/bin/docker
-```
-
-Note that after following these steps, you may need to start a separate terminal shell and/or you
+Note that after following all these steps, you may need to start a separate terminal shell and/or you
 may need to stop and restart the `podman` machine.
 
 Best of luck... ;)
