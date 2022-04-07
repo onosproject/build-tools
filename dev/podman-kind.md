@@ -69,6 +69,7 @@ brew install kind kubectl helm
 
 ## Setup µONOS Cluster
 ```
+export KIND_EXPERIMENTAL_PROVIDER=podman
 cd build-tools/dev
 ./setup-cluster
 ```
