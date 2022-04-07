@@ -19,10 +19,15 @@ podman machine start
 ```
 
 ## Install system helper service
+To avoid having to export `DOCKER_HOST` environment variable, you can install the MacOS
+system helper service via the following commands:
 ```
 sudo /usr/local/Cellar/podman/4.0.3/bin/podman-mac-helper install
 podman machine stop; podman machine start
 ```
+Note that this is a one-time setup. Once run, you won't need to do this again even if you re-create and re-modify
+the `podman` machine via the following steps.
+
 ## Patch podman.service on the VM
 At this point some changes have to be made to the podman machine to allow it
 to operate with kind in rootless mode:
