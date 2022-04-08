@@ -9,12 +9,16 @@
 set -eu -o pipefail
 
 project=${1:-onosproject}
-BASE_BRANCH=${BASE_BRANCH:-master}
+GIT_BRANCH=${GIT_BRANCH:-origin/master}
+BASE_BRANCH=${BASE_BRANCH:-"$(basename -- $GIT_BRANCH)"}
 VERSIONFILE=${VERSIONFILE:-VERSION}
 export VERSIONFILE
 MAKEFILE=${MAKEFILE:-"Makefile"}
 MAKEFILE_ROOT=${MAKEFILE_ROOT:-"."}
 export MAKEFILE
+echo Building branch "$BASE_BRANCH"
+
+exit
 
 if [ ! -d "../build-tools" ]; then wd=${PWD} && cd .. && git clone https://github.com/onosproject/build-tools.git && cd $wd; fi
 
@@ -34,9 +38,6 @@ vers=(${VERSION//./ })
 
 # go likes 'v' to lead off a version string
 export VERSION=v${VERSION}
-
-# Travis leaves you in a detatched HEAD, return to base
-git checkout ${BASE_BRANCH}
 
 if ../build-tools/tag-collision-reject; then
   # Do a release build
