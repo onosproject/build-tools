@@ -18,8 +18,6 @@ MAKEFILE_ROOT=${MAKEFILE_ROOT:-"."}
 export MAKEFILE
 echo Building branch "$BASE_BRANCH"
 
-exit
-
 if [ ! -d "../build-tools" ]; then wd=${PWD} && cd .. && git clone https://github.com/onosproject/build-tools.git && cd $wd; fi
 
 # Set up the git environment to allow making commits
