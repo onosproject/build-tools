@@ -50,6 +50,9 @@ if ../build-tools/tag-collision-reject; then
   # publish artifacts
   make -C $MAKEFILE_ROOT -f $MAKEFILE publish
 
+  # return to base branch in case we are on a detached hed
+  git checkout "${BASE_BRANCH}"
+
   # Update the VERSION file to the next dev version
   new_version=${vers[0]}.${vers[1]}.`expr ${vers[2]} + 1`-dev
   echo ${new_version} >./$VERSIONFILE
