@@ -11,6 +11,7 @@ set -eu -o pipefail
 
 ONOS_REPO=${ONOS_REPO:-${PWD##*/}}
 TEST_PACKAGES=${TEST_PACKAGES:-github.com/onosproject/${ONOS_REPO}/...}
+RACE_CHECK=${RACE_CHECK:-"on"}
 GO_TEST_OUTPUT=go-test-output.out
 GO_COVERAGE_OUTPUT=go-coverage-output.out
 JENKINS_TEST_REPORT=report.xml
@@ -18,9 +19,16 @@ JENKINS_COVERAGE_REPORT=coverage.xml
 
 result=0
 
+race=""
+
+if [[ "$RACE_CHECK" = "on" ]]
+then
+  race="-race"
+fi
+
 if [[ "$TEST_PACKAGES" != "NONE" ]]
 then
-  if ! go test -v -race "-coverprofile=${GO_COVERAGE_OUTPUT}" ${TEST_PACKAGES} >"${GO_TEST_OUTPUT}" 2>&1
+  if ! go test -v $race "-coverprofile=${GO_COVERAGE_OUTPUT}" ${TEST_PACKAGES} >"${GO_TEST_OUTPUT}" 2>&1
   then
       result=1
   fi
