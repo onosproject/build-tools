@@ -12,8 +12,10 @@ RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.19
     unzip -o protoc-3.19.4-linux-x86_64.zip -d /usr/local include/* && \
     rm -rf protoc-3.19.4-linux-x86_64.zip
 
+RUN export GO111MODULE=on && \
+    go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.0
+
 RUN export GO111MODULE=off && \
-    go get -u google.golang.org/protobuf/cmd/protoc-gen-go && \
     go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc && \
     go get -u github.com/gogo/protobuf/proto && \
     go get -u github.com/gogo/protobuf/gogoproto && \
@@ -37,7 +39,7 @@ RUN mkdir -p /go/src/github.com/google /go/src/github.com/p4lang && \
     mv protoc-gen-grpc-web-1.2.1-linux-x86_64 /usr/local/bin/protoc-gen-grpc-web && \
     chmod +x /usr/local/bin/protoc-gen-grpc-web
 
-RUN python3 -m pip install -U build markupsafe==2.0.1 betterproto[compiler]==2.0.0b4
+RUN python3 -m pip install -U build markupsafe==2.0.1 betterproto[compiler]==2.0.0b2
 
 WORKDIR "/go/src/github.com/"
 
