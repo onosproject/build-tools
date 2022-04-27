@@ -1,8 +1,9 @@
+# SPDX-FileCopyrightText: 2022-present Intel Corporation
 # SPDX-FileCopyrightText: 2020-present Open Networking Foundation <info@opennetworking.org>
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM golang:1.17.8
+FROM golang:1.18.1
 
 COPY dep-*.sha256 .
 
@@ -17,14 +18,15 @@ RUN mkdir release && \
     git clone --branch main https://github.com/protocolbuffers/protobuf /go/src/github.com/protocolbuffers/protobuf
 
 RUN export GO111MODULE=on && \
-    go get -u github.com/golang/protobuf/protoc-gen-go && \
+    go install github.com/golang/protobuf/protoc-gen-go@latest && \
+    go install github.com/openconfig/ygot/generator@latest
+
+RUN export GO111MODULE=off && \
     go get -u google.golang.org/protobuf/proto && \
     go get -u golang.org/x/lint/golint && \
     go get -u github.com/fzipp/gocyclo && \
     go get -u github.com/client9/misspell/cmd/misspell && \
-    go get -u github.com/gordonklaus/ineffassign && \
-    go get -u github.com/openconfig/ygot/generator
-
+    go get -u github.com/gordonklaus/ineffassign
 WORKDIR "/go/src/github.com"
 
 ENTRYPOINT ["make"]
