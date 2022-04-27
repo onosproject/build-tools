@@ -21,6 +21,12 @@ RUN export GO111MODULE=on && \
     go install github.com/golang/protobuf/protoc-gen-go@latest && \
     go install github.com/openconfig/ygot/generator@latest
 
+RUN export GO111MODULE=off && \
+    go get -u google.golang.org/protobuf/proto && \
+    go get -u golang.org/x/lint/golint && \
+    go get -u github.com/fzipp/gocyclo && \
+    go get -u github.com/client9/misspell/cmd/misspell && \
+    go get -u github.com/gordonklaus/ineffassign
 WORKDIR "/go/src/github.com"
 
 ENTRYPOINT ["make"]
