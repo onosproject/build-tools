@@ -64,7 +64,7 @@ do
 
     # Upload to PyPI
     echo "Uploading to PyPI"
-    twine upload -r "$PYPI_INDEX" dist/*
+    python3 -m twine upload -r "$PYPI_INDEX" dist/*
 
     popd
   fi
