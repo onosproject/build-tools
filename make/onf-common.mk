@@ -29,13 +29,16 @@ golang-ci: # @HELP install golang-ci if not present
 reuse-tool: # @HELP install reuse if not present
 	command -v reuse || python3 -m pip install --user reuse
 
+twine: # @HELP install twine if not present
+	python3 -m twine --version || ( python3 -m pip install --upgrade pip && pip3 install twine )
+
 license: reuse-tool # @HELP run license checks
 	reuse lint
 
 bumponosdeps: # @HELP update "onosproject" go dependencies and push patch to git.
 	./build/build-tools/bump-onos-deps ${VERSION}
 
-integration-test-namespace:
+integration-test-namespace: # @HELP create the kubernetes namespace used by the integration tests
 	(kubectl delete ns test || exit 0) && kubectl create ns test
 
 clean:: # @HELP cleans the downloaded build tools directory
