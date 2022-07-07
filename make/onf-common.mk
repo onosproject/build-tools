@@ -41,5 +41,15 @@ bumponosdeps: # @HELP update "onosproject" go dependencies and push patch to git
 integration-test-namespace: # @HELP create the kubernetes namespace used by the integration tests
 	(kubectl delete ns test || exit 0) && kubectl create ns test
 
+docker-login: # @HELP log in to docker hub
+ifdef DOCKER_USER
+ifdef DOCKER_PASSWORD
+	echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USER} --password-stdin
+else
+	@echo "DOCKER_USER is specified but DOCKER_PASSWORD is missing"
+	@exit 1
+endif
+endif
+
 clean:: # @HELP cleans the downloaded build tools directory
 	rm -rf ./build/build-tools
