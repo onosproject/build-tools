@@ -24,7 +24,7 @@ jenkins-tools: # @HELP installs tooling needed for Jenkins
 	cd .. && go install github.com/jstemmer/go-junit-report@v1.0.0 && go install github.com/t-yuki/gocover-cobertura@master
 
 golang-ci: # @HELP install golang-ci if not present
-	golangci-lint --version || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b `go env GOPATH`/bin v1.50.0
+	golangci-lint --version | grep 1.52.2 || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b `go env GOPATH`/bin v1.52.2
 
 reuse-tool: # @HELP install reuse if not present
 	command -v reuse || python3 -m pip install --user reuse
