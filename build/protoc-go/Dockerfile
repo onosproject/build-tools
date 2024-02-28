@@ -14,24 +14,24 @@ RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.19
     rm -rf protoc-3.19.4-linux-x86_64.zip
 
 RUN export GO111MODULE=on && \
-    go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.0
+    go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.0 && \
+    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0 && \
+    go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@v1.5.1 && \
+    go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway@v1.16.0 && \
+    go install github.com/envoyproxy/protoc-gen-validate@v0.6.4 && \
+    go install github.com/favadi/protoc-go-inject-tag@v1.4.0
 
 RUN export GO111MODULE=off && \
-    go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc && \
     go get -u github.com/gogo/protobuf/proto && \
     go get -u github.com/gogo/protobuf/gogoproto && \
     go get -u github.com/gogo/protobuf/protoc-gen-gofast && \
     go get -u github.com/gogo/protobuf/protoc-gen-gogo && \
     go get -u github.com/gogo/protobuf/protoc-gen-gogofast && \
     go get -u github.com/gogo/protobuf/protoc-gen-gogofaster && \
-    go get -u github.com/gogo/protobuf/protoc-gen-gogoslick && \
-    go get -u github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc && \
-    go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway && \
-    go get -u github.com/envoyproxy/protoc-gen-validate && \
-    go get -u github.com/favadi/protoc-go-inject-tag
+    go get -u github.com/gogo/protobuf/protoc-gen-gogoslick
 
 RUN mkdir -p /go/src/github.com/google /go/src/github.com/p4lang && \
-    git clone --branch main https://github.com/google/protobuf /go/src/github.com/google/protobuf && \
+    git clone --branch 3.19.x https://github.com/protocolbuffers/protobuf /go/src/github.com/google/protobuf && \
     git clone --branch master https://github.com/openconfig/gnmi /go/src/github.com/openconfig/gnmi && \
     git clone --branch main https://github.com/p4lang/p4runtime /go/src/github.com/p4lang/p4runtime && \
     git clone --branch main https://github.com/googleapis/api-common-protos /go/src/github.com/googleapis/api-common-protos && \
