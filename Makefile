@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+
 .PHONY: build license
 
 ONOS_BUILD_VERSION := latest
