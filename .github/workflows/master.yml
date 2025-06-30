@@ -20,16 +20,7 @@ jobs:
         run: docker build -t onosproject/golang-build:latest build/golang-build
 
   lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: 'go.mod'
-      - uses: golangci/golangci-lint-action@v6.0.1
-        with:
-          version: latest
-          args: -v --config ./.golangci.yml
+    uses: onosproject/.github/.github/workflows/go-lint.yml@main
 
   protoc-go-docker:
     runs-on: ubuntu-latest
@@ -42,17 +33,7 @@ jobs:
         run: docker build -t onosproject/protoc-go:latest build/protoc-go
 
   license-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: reuse lint
-        uses: fsfe/reuse-action@v4
+    uses: onosproject/.github/.github/workflows/license-check.yml@main
 
   fossa-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: FOSSA scan
-        uses: fossa-contrib/fossa-action@v3
-        with:
-          fossa-api-key: 6d304c09a3ec097ba4517724e4a4d17d
+    uses: onosproject/.github/.github/workflows/fossa-scan.yml@main
